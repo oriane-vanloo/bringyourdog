@@ -23,7 +23,18 @@ const categoryMeta = {
   },
 };
 
+const featureFilterMeta = {
+  rainyDays: {
+    label: "Rainy days",
+  },
+  instagram: {
+    label: "Instagram",
+  },
+};
+
+const rainyDaysPattern = /\b(indoors?|inside|front bar|public bar|bar and upstairs|indoor dog friendly area|covered|undercover|all-weather|patio|courtyard|beer garden|deck|rooftop courtyard)\b/i;
 const activeCategories = new Set(Object.keys(categoryMeta));
+const activeFeatureFilters = new Set();
 const markersByPlace = new Map();
 const markerLayer = L.layerGroup();
 const suburbs = [
@@ -91,6 +102,7 @@ const selectedPlace = document.querySelector("#selectedPlace");
 const selectedPlaceDefaultParent = selectedPlace.parentElement;
 const selectedPlaceDefaultNextSibling = selectedPlace.nextSibling;
 const filterButtons = [...document.querySelectorAll(".filter-button")];
+const featureFilterButtons = [...document.querySelectorAll("[data-feature-filter]")];
 const searchClearButtons = [...document.querySelectorAll("[data-clear-search]")];
 const searchSuggestionPanels = [...document.querySelectorAll("[data-search-suggestions]")];
 const sidebar = document.querySelector(".sidebar");
@@ -119,7 +131,10 @@ const manualPhotoOverrides = window.DOG_FRIENDLY_MANUAL_PHOTOS || {};
 const googlePhotoCache = new Map();
 
 let mapRefreshFrame = null;
+let mobileViewportRenderFrame = null;
 let shouldFitBoundsOnRefresh = false;
+let shouldFocusSelectedPlaceOnRefresh = false;
+let lastMobileViewportPlaceSignature = "";
 let googleMapsScriptPromise = null;
 let placesLibraryPromise = null;
 let userLocationMarker = null;
@@ -251,11 +266,99 @@ function placeMatches(place, query) {
   return haystack.includes(query.toLowerCase());
 }
 
-function getFilteredPlaces() {
+function placeMatchesFeatureFilter(place, feature) {
+  if (feature === "rainyDays") {
+    return isShelteredPlace(place);
+  }
+
+  if (feature === "instagram") {
+    return Boolean(safeExternalUrl(place.instagramUrl));
+  }
+
+  return true;
+}
+
+function placeMatchesFeatureFilters(place) {
+  return [...activeFeatureFilters].every((feature) => placeMatchesFeatureFilter(place, feature));
+}
+
+function isShelteredPlace(place) {
+  return rainyDaysPattern.test(place.description || "");
+}
+
+function getMatchingPlaces() {
   const query = searchInput.value.trim();
 
   return places.filter((place) => {
-    return activeCategories.has(place.category) && placeMatches(place, query);
+    return activeCategories.has(place.category) && placeMatchesFeatureFilters(place) && placeMatches(place, query);
+  });
+}
+
+function shouldApplyMobileMapBounds() {
+  return Boolean(map && mobileMapQuery.matches && !isMapExpanded);
+}
+
+function filterPlacesToCurrentMapBounds(filteredPlaces) {
+  if (!shouldApplyMobileMapBounds()) {
+    return filteredPlaces;
+  }
+
+  const bounds = map.getBounds();
+  return filteredPlaces.filter((place) => bounds.contains([place.lat, place.lng]));
+}
+
+function getFilteredPlaces({ includeMapBounds = true } = {}) {
+  const filteredPlaces = getMatchingPlaces();
+
+  return includeMapBounds
+    ? filterPlacesToCurrentMapBounds(filteredPlaces)
+    : filteredPlaces;
+}
+
+function placeListSignature(filteredPlaces) {
+  return filteredPlaces.map((place) => place.id).join("|");
+}
+
+function rememberMobileViewportSignature(filteredPlaces) {
+  lastMobileViewportPlaceSignature = shouldApplyMobileMapBounds()
+    ? placeListSignature(filteredPlaces)
+    : "";
+}
+
+function clearHiddenMobileHomeSelection(filteredPlaces) {
+  if (!shouldApplyMobileMapBounds() || !selectedPlaceId) {
+    return;
+  }
+
+  if (filteredPlaces.some((place) => place.id === selectedPlaceId)) {
+    return;
+  }
+
+  selectedPlaceId = null;
+  map.closePopup();
+}
+
+function scheduleMobileViewportListRefresh() {
+  if (!shouldApplyMobileMapBounds() || !places.length) {
+    return;
+  }
+
+  if (mobileViewportRenderFrame) {
+    return;
+  }
+
+  mobileViewportRenderFrame = window.requestAnimationFrame(() => {
+    mobileViewportRenderFrame = null;
+
+    if (!shouldApplyMobileMapBounds()) {
+      return;
+    }
+
+    const filteredPlaces = getFilteredPlaces();
+    const nextSignature = placeListSignature(filteredPlaces);
+    if (nextSignature !== lastMobileViewportPlaceSignature) {
+      render();
+    }
   });
 }
 
@@ -789,11 +892,15 @@ async function hydrateSelectedPhoto(place) {
 function popupHtml(place) {
   const location = getLocationParts(place.address);
   const instagramMarkup = instagramActionHtml(place);
+  const shelteredTag = isShelteredPlace(place)
+    ? '<span class="category sheltered">Sheltered</span>'
+    : "";
 
   return `
     <article class="popup">
       <div class="popup-tags">
         <span class="category ${categoryClass(place.category)}">${escapeHtml(place.category)}</span>
+        ${shelteredTag}
         ${location.suburb ? `<span class="category suburb">${escapeHtml(location.suburb)}</span>` : ""}
       </div>
       <h2>${escapeHtml(place.name)}</h2>
@@ -844,6 +951,9 @@ function renderSelectedPlace(place) {
   const manualPhoto = getManualPhotos(place)[0];
   const shouldLoadGooglePhoto = !manualPhoto && googlePhotosEnabled();
   const instagramMarkup = instagramActionHtml(place);
+  const shelteredTag = isShelteredPlace(place)
+    ? '<span class="tag sheltered">Sheltered</span>'
+    : "";
   const photoMarkup = manualPhoto
     ? renderPlacePhoto(manualPhoto, place)
     : shouldLoadGooglePhoto
@@ -855,6 +965,7 @@ function renderSelectedPlace(place) {
     </button>
     <div class="selected-tags">
       <span class="tag ${categoryClass(place.category)}">${escapeHtml(place.category)}</span>
+      ${shelteredTag}
       ${location.suburb ? `<span class="tag suburb">${escapeHtml(location.suburb)}</span>` : ""}
     </div>
     ${photoMarkup}
@@ -998,15 +1109,25 @@ function updateFilterButtons() {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
+  featureFilterButtons.forEach((button) => {
+    const feature = button.dataset.featureFilter;
+    const isActive = activeFeatureFilters.has(feature);
+
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
   if (expandedFilterBadge && expandedFilterToggle) {
-    const hasAppliedFilters = activeCategories.size !== categoryCount;
+    const appliedFilterCount = (activeCategories.size === categoryCount ? 0 : activeCategories.size)
+      + activeFeatureFilters.size;
+    const hasAppliedFilters = appliedFilterCount > 0;
     expandedFilterBadge.hidden = !hasAppliedFilters;
-    expandedFilterBadge.textContent = hasAppliedFilters ? String(activeCategories.size) : "";
+    expandedFilterBadge.textContent = hasAppliedFilters ? String(appliedFilterCount) : "";
     expandedFilterToggle.setAttribute(
       "aria-label",
       hasAppliedFilters
-        ? `Filter categories, ${activeCategories.size} ${activeCategories.size === 1 ? "category" : "categories"} active`
-        : "Filter categories"
+        ? `Filter places, ${appliedFilterCount} ${appliedFilterCount === 1 ? "filter" : "filters"} active`
+        : "Filter places"
     );
   }
 }
@@ -1025,12 +1146,28 @@ function fitFilteredBounds(filteredPlaces) {
   });
 }
 
-function refreshMapLayout({ fitBounds = false } = {}) {
+function getSelectedPlace() {
+  return selectedPlaceId ? places.find((place) => place.id === selectedPlaceId) : null;
+}
+
+function focusSelectedPlaceOnMap() {
+  const place = getSelectedPlace();
+
+  if (!place) {
+    return false;
+  }
+
+  map.setView([place.lat, place.lng], Math.max(map.getZoom(), 17), { animate: false });
+  return true;
+}
+
+function refreshMapLayout({ fitBounds = false, focusSelectedPlace = false } = {}) {
   if (!map) {
     return;
   }
 
   shouldFitBoundsOnRefresh = shouldFitBoundsOnRefresh || fitBounds;
+  shouldFocusSelectedPlaceOnRefresh = shouldFocusSelectedPlaceOnRefresh || focusSelectedPlace;
 
   if (mapRefreshFrame) {
     return;
@@ -1040,9 +1177,18 @@ function refreshMapLayout({ fitBounds = false } = {}) {
     mapRefreshFrame = null;
     map.invalidateSize({ pan: false });
 
+    if (shouldFocusSelectedPlaceOnRefresh && focusSelectedPlaceOnMap()) {
+      shouldFocusSelectedPlaceOnRefresh = false;
+      shouldFitBoundsOnRefresh = false;
+      window.requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+      return;
+    }
+
+    shouldFocusSelectedPlaceOnRefresh = false;
+
     if (shouldFitBoundsOnRefresh) {
       shouldFitBoundsOnRefresh = false;
-      fitFilteredBounds(getFilteredPlaces());
+      fitFilteredBounds(getFilteredPlaces({ includeMapBounds: false }));
       window.requestAnimationFrame(() => map.invalidateSize({ pan: false }));
     }
   });
@@ -1050,7 +1196,10 @@ function refreshMapLayout({ fitBounds = false } = {}) {
 
 function render({ fitBounds = false } = {}) {
   const filteredPlaces = getFilteredPlaces();
-  renderMarkers(filteredPlaces);
+  const markerPlaces = getFilteredPlaces({ includeMapBounds: false });
+  clearHiddenMobileHomeSelection(filteredPlaces);
+  rememberMobileViewportSignature(filteredPlaces);
+  renderMarkers(markerPlaces);
   renderList(filteredPlaces);
   updateResultCount(filteredPlaces);
   updateFilterButtons();
@@ -1073,7 +1222,8 @@ function syncSelectedPlacePanel() {
   const selectedPlaceInView = getFilteredPlaces().find((place) => place.id === selectedPlaceId);
 
   if (shouldUseBottomSheet()) {
-    renderSelectedPlace(selectedPlaceInView || places.find((place) => place.id === selectedPlaceId));
+    const fallbackPlace = isMapExpanded ? places.find((place) => place.id === selectedPlaceId) : null;
+    renderSelectedPlace(selectedPlaceInView || fallbackPlace);
     positionSelectedPlace(selectedPlaceInView);
   } else {
     restoreSelectedPlacePosition();
@@ -1122,23 +1272,38 @@ function keepSelectedCardVisible({ behavior = "smooth" } = {}) {
 }
 
 function selectPlace(place, { openPopup = false, pan = false, source = "unknown" } = {}) {
+  const shouldExpandMobileMap = source === "map_marker" && shouldApplyMobileMapBounds();
+  const selectionSurface = currentMapSurface();
+
   selectedPlaceId = place.id;
-  updatePlaceListSelection();
-  syncSelectedPlacePanel();
+  if (shouldExpandMobileMap) {
+    isMapExpanded = true;
+    updateMobileMapState();
+  } else {
+    updatePlaceListSelection();
+    syncSelectedPlacePanel();
+  }
   trackEvent("place_select", {
     ...placeAnalyticsParams(place),
     selection_source: source,
-    map_surface: currentMapSurface(),
+    map_surface: selectionSurface,
   });
 
   const marker = markersByPlace.get(place.id);
-  if (pan) {
+  if (pan && !shouldExpandMobileMap) {
     map.flyTo([place.lat, place.lng], 17, { duration: 0.55 });
   }
   if (shouldUseBottomSheet()) {
     map.closePopup();
   } else if (openPopup && marker) {
     marker.openPopup();
+  }
+
+  if (shouldExpandMobileMap) {
+    trackEvent("map_expand", {
+      map_surface: "mobile_home",
+      expand_source: "map_marker",
+    });
   }
 }
 
@@ -1357,7 +1522,16 @@ function updateMobileMapState({ fitBounds = false } = {}) {
 
   syncSelectedPlacePanel();
   setMapInteractivity(true);
-  refreshMapLayout({ fitBounds });
+  refreshMapLayout({
+    fitBounds: fitBounds && !selectedPlaceId,
+    focusSelectedPlace: Boolean(selectedPlaceId),
+  });
+
+  if (shouldExpandMap) {
+    lastMobileViewportPlaceSignature = "";
+  } else {
+    scheduleMobileViewportListRefresh();
+  }
 }
 
 function setupFilters() {
@@ -1381,6 +1555,31 @@ function setupFilters() {
         category,
         enabled: activeCategories.has(category),
         active_category_count: activeCategories.size,
+        filter_surface: currentMapSurface(),
+      });
+      render();
+      keepSelectedCardVisible();
+    });
+  });
+
+  featureFilterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const feature = button.dataset.featureFilter;
+
+      if (!featureFilterMeta[feature]) {
+        return;
+      }
+
+      if (activeFeatureFilters.has(feature)) {
+        activeFeatureFilters.delete(feature);
+      } else {
+        activeFeatureFilters.add(feature);
+      }
+
+      trackEvent("feature_filter_toggle", {
+        feature,
+        enabled: activeFeatureFilters.has(feature),
+        active_feature_filter_count: activeFeatureFilters.size,
         filter_surface: currentMapSurface(),
       });
       render();
@@ -1673,6 +1872,12 @@ function setupDesktopZoomControls() {
   updateDesktopZoomControls();
 }
 
+function setupMobileViewportFiltering() {
+  map.on("moveend", () => {
+    scheduleMobileViewportListRefresh();
+  });
+}
+
 function flagLocateButtonError() {
   if (!mapLocateToggle) {
     return;
@@ -1851,6 +2056,7 @@ async function init() {
   setupMapResizeHandling();
   setupMobileMapToggle();
   setupDesktopZoomControls();
+  setupMobileViewportFiltering();
   setupLocationControl();
 
   places = await loadPlaces();
