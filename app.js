@@ -1285,6 +1285,7 @@ function keepSelectedCardVisible({ behavior = "smooth" } = {}) {
 
 function selectPlace(place, { openPopup = false, pan = false, source = "unknown" } = {}) {
   const shouldExpandMobileMap = source === "map_marker" && shouldApplyMobileMapBounds();
+  const shouldSuppressListPan = source === "list_card" && shouldApplyMobileMapBounds();
   const selectionSurface = currentMapSurface();
 
   selectedPlaceId = place.id;
@@ -1302,7 +1303,7 @@ function selectPlace(place, { openPopup = false, pan = false, source = "unknown"
   });
 
   const marker = markersByPlace.get(place.id);
-  if (pan && !shouldExpandMobileMap) {
+  if (pan && !shouldExpandMobileMap && !shouldSuppressListPan) {
     map.flyTo([place.lat, place.lng], 17, { duration: 0.55 });
   }
   if (shouldUseBottomSheet()) {
