@@ -494,6 +494,18 @@ h1 {
   max-width: calc(100% - 48px);
 }
 
+.map-filter-overlay {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.desktop-feature-filters {
+  display: flex;
+  gap: 8px;
+  padding: 0 2px;
+}
+
 .map-expand-toggle {
   position: absolute;
   z-index: 610;
@@ -762,6 +774,13 @@ h1 {
   overflow: visible;
   padding: 0;
   white-space: normal;
+}
+
+.sheet-feature-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 10px;
 }
 
 .filter-button {

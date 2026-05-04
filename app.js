@@ -135,6 +135,7 @@ let mobileViewportRenderFrame = null;
 let shouldFitBoundsOnRefresh = false;
 let shouldFocusSelectedPlaceOnRefresh = false;
 let lastMobileViewportPlaceSignature = "";
+let mapInteractionVersion = 0;
 let googleMapsScriptPromise = null;
 let placesLibraryPromise = null;
 let userLocationMarker = null;
@@ -1194,6 +1195,17 @@ function refreshMapLayout({ fitBounds = false, focusSelectedPlace = false } = {}
   });
 }
 
+function cancelPendingMapAutoposition() {
+  mapInteractionVersion += 1;
+  shouldFitBoundsOnRefresh = false;
+  shouldFocusSelectedPlaceOnRefresh = false;
+
+  if (mapRefreshFrame) {
+    window.cancelAnimationFrame(mapRefreshFrame);
+    mapRefreshFrame = null;
+  }
+}
+
 function render({ fitBounds = false } = {}) {
   const filteredPlaces = getFilteredPlaces();
   const markerPlaces = getFilteredPlaces({ includeMapBounds: false });
@@ -1878,6 +1890,19 @@ function setupMobileViewportFiltering() {
   });
 }
 
+function setupMapInteractionGuards() {
+  map.on("dragstart", cancelPendingMapAutoposition);
+  map.on("zoomstart", (event) => {
+    if (event.originalEvent) {
+      cancelPendingMapAutoposition();
+    }
+  });
+
+  mapElement.addEventListener("pointerdown", cancelPendingMapAutoposition, { passive: true });
+  mapElement.addEventListener("touchstart", cancelPendingMapAutoposition, { passive: true });
+  mapElement.addEventListener("wheel", cancelPendingMapAutoposition, { passive: true });
+}
+
 function flagLocateButtonError() {
   if (!mapLocateToggle) {
     return;
@@ -2057,6 +2082,7 @@ async function init() {
   setupMobileMapToggle();
   setupDesktopZoomControls();
   setupMobileViewportFiltering();
+  setupMapInteractionGuards();
   setupLocationControl();
 
   places = await loadPlaces();
@@ -2066,8 +2092,13 @@ async function init() {
   setupDesktopSidebarGutterScroll();
   setupActionTracking();
   render({ fitBounds: true });
+  const initialFitVersion = mapInteractionVersion;
   [60, 180, 420, 900].forEach((delay) => {
-    window.setTimeout(() => refreshMapLayout({ fitBounds: true }), delay);
+    window.setTimeout(() => {
+      if (mapInteractionVersion === initialFitVersion) {
+        refreshMapLayout({ fitBounds: true });
+      }
+    }, delay);
   });
 }
 

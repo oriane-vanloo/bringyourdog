@@ -60,23 +60,41 @@
       </aside>
 
       <section class="map-panel" aria-label="Bring Your Dog Melbourne map">
-        <div class="category-filters map-overlay" aria-label="Category filters">
-          <button class="filter-button active" data-category="Cafe" type="button">
-            <span class="filter-checkbox" aria-hidden="true"></span>
-            <img src="./assets/icons/cafe-marker.png" alt=""> Cafe
-          </button>
-          <button class="filter-button active" data-category="Pub/Bar" type="button">
-            <span class="filter-checkbox" aria-hidden="true"></span>
-            <img src="./assets/icons/pub-marker.png" alt=""> Pub/Bar
-          </button>
-          <button class="filter-button active" data-category="Park" type="button">
-            <span class="filter-checkbox" aria-hidden="true"></span>
-            <img src="./assets/icons/park-marker.png" alt=""> Park
-          </button>
-          <button class="filter-button active" data-category="Shop" type="button">
-            <span class="filter-checkbox" aria-hidden="true"></span>
-            <img src="./assets/icons/shop-marker.png" alt=""> Shop
-          </button>
+        <div class="map-filter-overlay map-overlay" aria-label="Map filters">
+          <div class="category-filters" aria-label="Category filters">
+            <button class="filter-button active" data-category="Cafe" type="button">
+              <span class="filter-checkbox" aria-hidden="true"></span>
+              <img src="./assets/icons/cafe-marker.png" alt=""> Cafe
+            </button>
+            <button class="filter-button active" data-category="Pub/Bar" type="button">
+              <span class="filter-checkbox" aria-hidden="true"></span>
+              <img src="./assets/icons/pub-marker.png" alt=""> Pub/Bar
+            </button>
+            <button class="filter-button active" data-category="Park" type="button">
+              <span class="filter-checkbox" aria-hidden="true"></span>
+              <img src="./assets/icons/park-marker.png" alt=""> Park
+            </button>
+            <button class="filter-button active" data-category="Shop" type="button">
+              <span class="filter-checkbox" aria-hidden="true"></span>
+              <img src="./assets/icons/shop-marker.png" alt=""> Shop
+            </button>
+          </div>
+          <div class="desktop-feature-filters" aria-label="Feature filters">
+            <button class="feature-filter-button" data-feature-filter="rainyDays" type="button" aria-pressed="false" aria-label="Rainy days">
+              <span class="feature-toggle" aria-hidden="true">
+                <span class="feature-toggle-knob">
+                  <img src="./assets/icons/umbrella.svg" alt="">
+                </span>
+              </span>
+            </button>
+            <button class="feature-filter-button" data-feature-filter="instagram" type="button" aria-pressed="false" aria-label="Instagram">
+              <span class="feature-toggle" aria-hidden="true">
+                <span class="feature-toggle-knob">
+                  <img src="./assets/icons/instagramicon.svg" alt="">
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
         <button id="mapExpandToggle" class="map-expand-toggle" type="button" aria-expanded="false" aria-label="Expand map">
           <span class="map-expand-symbol" aria-hidden="true"><img src="./assets/icons/expandicon.svg" alt=""></span>
@@ -133,6 +151,8 @@
                 <span class="filter-checkbox" aria-hidden="true"></span>
                 <img src="./assets/icons/shop-marker.png" alt=""> Shop
               </button>
+            </div>
+            <div class="sheet-feature-filters" aria-label="Feature filters">
               <button class="feature-filter-button" data-feature-filter="rainyDays" type="button" aria-pressed="false" aria-label="Rainy days">
                 <span class="feature-toggle" aria-hidden="true">
                   <span class="feature-toggle-knob">
