@@ -492,6 +492,15 @@
     "geocodeSource": "manual"
   },
   {
+    "name": "Glassworks Cafe",
+    "address": "23 Gipps St Collingwood VIC 3066",
+    "category": "Cafe",
+    "description": "Dogs welcome on undercover balcony seating.",
+    "lat": -37.8048919,
+    "lng": 144.9880137,
+    "geocodeSource": "facebook+nominatim"
+  },
+  {
     "name": "Glory Us",
     "address": "73 Reid St Fitzroy North VIC 3068",
     "category": "Cafe",
@@ -810,6 +819,15 @@
     "geocodeSource": "nominatim"
   },
   {
+    "name": "Panenka",
+    "address": "200 Gipps St Abbotsford VIC 3067",
+    "category": "Cafe",
+    "description": "Dogs welcome in the outdoor seating area.",
+    "lat": -37.8049719,
+    "lng": 144.997453,
+    "geocodeSource": "facebook+nominatim"
+  },
+  {
     "name": "Park Street Reserve",
     "address": "68 Park St Fitzroy North VIC 3068",
     "category": "Park",
@@ -871,6 +889,15 @@
     "lat": -37.7906213,
     "lng": 144.9967427,
     "geocodeSource": "nominatim"
+  },
+  {
+    "name": "Raph's Deli",
+    "address": "161 Gipps St Abbotsford VIC 3067",
+    "category": "Cafe",
+    "description": "Dogs welcome at covered outdoor seating.",
+    "lat": -37.8053529,
+    "lng": 144.9940919,
+    "geocodeSource": "facebook+nominatim"
   },
   {
     "name": "Republica",
