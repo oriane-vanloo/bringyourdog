@@ -115,6 +115,9 @@ const desktopZoomIn = document.querySelector("#desktopZoomIn");
 const desktopZoomOut = document.querySelector("#desktopZoomOut");
 const expandedMapHome = document.querySelector("#expandedMapHome");
 const expandedSearchInput = document.querySelector("#expandedSearch");
+const mainFilterToggle = document.querySelector("#mainFilterToggle");
+const mainFilterBadge = document.querySelector("#mainFilterBadge");
+const mainFilterSheet = document.querySelector("#mainFilterSheet");
 const expandedFilterToggle = document.querySelector("#expandedFilterToggle");
 const expandedFilterBadge = document.querySelector("#expandedFilterBadge");
 const expandedFilterSheet = document.querySelector("#expandedFilterSheet");
@@ -142,6 +145,7 @@ let placesLibraryPromise = null;
 let userLocationMarker = null;
 let userLocationAccuracy = null;
 let isMapExpanded = false;
+let isMainFilterSheetOpen = false;
 let isExpandedFilterSheetOpen = false;
 let searchAnalyticsTimeout = null;
 let lockedScrollY = 0;
@@ -1119,6 +1123,7 @@ function resetToAllPlaces() {
 
   map.closePopup();
   hideSearchSuggestions();
+  setMainFilterSheet(false);
   setExpandedFilterSheet(false);
   updateSearchClearButtons();
   trackEvent("filters_reset", {
@@ -1138,6 +1143,22 @@ function updateNoResultsHints(filteredPlaces) {
   filterEmptyStates.forEach((state) => {
     state.hidden = !hasNoResults;
   });
+}
+
+function updateFilterBadge(toggle, badge, appliedFilterCount) {
+  if (!toggle || !badge) {
+    return;
+  }
+
+  const hasAppliedFilters = appliedFilterCount > 0;
+  badge.hidden = !hasAppliedFilters;
+  badge.textContent = hasAppliedFilters ? String(appliedFilterCount) : "";
+  toggle.setAttribute(
+    "aria-label",
+    hasAppliedFilters
+      ? `Filter places, ${appliedFilterCount} ${appliedFilterCount === 1 ? "filter" : "filters"} active`
+      : "Filter places"
+  );
 }
 
 function updateFilterButtons() {
@@ -1161,19 +1182,10 @@ function updateFilterButtons() {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
-  if (expandedFilterBadge && expandedFilterToggle) {
-    const appliedFilterCount = (activeCategories.size === categoryCount ? 0 : activeCategories.size)
-      + activeFeatureFilters.size;
-    const hasAppliedFilters = appliedFilterCount > 0;
-    expandedFilterBadge.hidden = !hasAppliedFilters;
-    expandedFilterBadge.textContent = hasAppliedFilters ? String(appliedFilterCount) : "";
-    expandedFilterToggle.setAttribute(
-      "aria-label",
-      hasAppliedFilters
-        ? `Filter places, ${appliedFilterCount} ${appliedFilterCount === 1 ? "filter" : "filters"} active`
-        : "Filter places"
-    );
-  }
+  const appliedFilterCount = (activeCategories.size === categoryCount ? 0 : activeCategories.size)
+    + activeFeatureFilters.size;
+  updateFilterBadge(mainFilterToggle, mainFilterBadge, appliedFilterCount);
+  updateFilterBadge(expandedFilterToggle, expandedFilterBadge, appliedFilterCount);
 }
 
 function fitFilteredBounds(filteredPlaces) {
@@ -1520,6 +1532,58 @@ function setExpandedFilterSheet(open) {
   }
 }
 
+function setMainFilterSheet(open) {
+  const shouldOpen = Boolean(open) && mobileMapQuery.matches && !isMapExpanded;
+
+  isMainFilterSheetOpen = shouldOpen;
+  sidebar.classList.toggle("main-filter-sheet-open", shouldOpen);
+
+  if (mainFilterToggle) {
+    mainFilterToggle.setAttribute("aria-expanded", String(shouldOpen));
+  }
+  if (mainFilterSheet) {
+    mainFilterSheet.hidden = !shouldOpen;
+  }
+
+  if (shouldOpen) {
+    positionMainFilterSheet();
+  } else if (mainFilterSheet) {
+    mainFilterSheet.classList.remove("opens-up");
+    mainFilterSheet.style.removeProperty("--main-filter-sheet-max-height");
+  }
+}
+
+function positionMainFilterSheet() {
+  if (!isMainFilterSheetOpen || !mainFilterSheet || mainFilterSheet.hidden) {
+    return;
+  }
+
+  const anchor = mainFilterToggle?.closest(".main-search-row") || mainFilterSheet.previousElementSibling;
+  if (!anchor) {
+    return;
+  }
+
+  mainFilterSheet.classList.remove("opens-up");
+  mainFilterSheet.style.removeProperty("--main-filter-sheet-max-height");
+
+  window.requestAnimationFrame(() => {
+    if (!isMainFilterSheetOpen || !mainFilterSheet || mainFilterSheet.hidden) {
+      return;
+    }
+
+    const anchorRect = anchor.getBoundingClientRect();
+    const sheetHeight = mainFilterSheet.offsetHeight;
+    const margin = 12;
+    const spaceBelow = window.innerHeight - anchorRect.bottom - margin;
+    const spaceAbove = anchorRect.top - margin;
+    const shouldOpenUp = sheetHeight > spaceBelow && spaceAbove > spaceBelow;
+    const availableSpace = Math.max(180, Math.floor((shouldOpenUp ? spaceAbove : spaceBelow) - margin));
+
+    mainFilterSheet.classList.toggle("opens-up", shouldOpenUp);
+    mainFilterSheet.style.setProperty("--main-filter-sheet-max-height", `${availableSpace}px`);
+  });
+}
+
 function setPageScrollLock(locked) {
   if (locked) {
     if (document.body.style.position === "fixed") {
@@ -1565,9 +1629,13 @@ function updateMobileMapState({ fitBounds = false } = {}) {
   if (!shouldExpandMap) {
     setExpandedFilterSheet(false);
   } else {
+    setMainFilterSheet(false);
     setExpandedFilterSheet(isExpandedFilterSheetOpen);
   }
 
+  if (mainFilterToggle) {
+    mainFilterToggle.hidden = !isMobile;
+  }
   mapExpandToggle.hidden = !isMobile;
   mapExpandToggle.setAttribute("aria-expanded", String(shouldExpandMap));
   mapExpandToggle.setAttribute("aria-label", shouldExpandMap ? "Collapse map" : "Expand map");
@@ -1854,6 +1922,16 @@ function setupMobileMapToggle() {
     });
   }
 
+  if (mainFilterToggle) {
+    mainFilterToggle.addEventListener("click", () => {
+      hideSearchSuggestions();
+      setMainFilterSheet(!isMainFilterSheetOpen);
+      trackEvent(isMainFilterSheetOpen ? "filter_sheet_open" : "filter_sheet_close", {
+        filter_surface: "mobile_home",
+      });
+    });
+  }
+
   document.addEventListener("pointerdown", (event) => {
     if (!isExpandedFilterSheetOpen || !isMapExpanded || !mobileMapQuery.matches) {
       return;
@@ -1868,9 +1946,28 @@ function setupMobileMapToggle() {
     setExpandedFilterSheet(false);
   });
 
+  document.addEventListener("pointerdown", (event) => {
+    if (!isMainFilterSheetOpen || isMapExpanded || !mobileMapQuery.matches) {
+      return;
+    }
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+    if (event.target.closest("#mainFilterSheet, #mainFilterToggle")) {
+      return;
+    }
+
+    setMainFilterSheet(false);
+  });
+
+  window.addEventListener("resize", positionMainFilterSheet);
+  window.addEventListener("orientationchange", positionMainFilterSheet);
+  window.addEventListener("scroll", positionMainFilterSheet, { passive: true });
+
   const onMobileStateChange = () => {
     if (!mobileMapQuery.matches) {
       isMapExpanded = false;
+      setMainFilterSheet(false);
       setExpandedFilterSheet(false);
     }
     updateMobileMapState({ fitBounds: true });
@@ -1893,6 +1990,11 @@ function setupMobileMapToggle() {
 
     if (isExpandedFilterSheetOpen) {
       setExpandedFilterSheet(false);
+      return;
+    }
+
+    if (isMainFilterSheetOpen) {
+      setMainFilterSheet(false);
       return;
     }
 

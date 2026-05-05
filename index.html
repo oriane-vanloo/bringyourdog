@@ -38,13 +38,64 @@
 
         <div class="search-wrap">
           <label for="search">Search places</label>
-          <input id="search" type="search" placeholder="Search by name, suburb, or feature" autocomplete="off">
-          <button class="search-clear" type="button" aria-label="Clear search" data-clear-search hidden>
-            <img src="./assets/icons/eraseicon.svg" alt="">
-          </button>
-          <div id="searchSuggestions" class="search-suggestions" data-search-suggestions hidden>
-            <p class="search-suggestions-title">Last searches</p>
-            <div class="search-suggestions-list" role="listbox" aria-label="Last searches"></div>
+          <div class="main-search-row">
+            <div class="main-search-field">
+              <input id="search" type="search" placeholder="Search by name, suburb, or feature" autocomplete="off">
+              <button class="search-clear" type="button" aria-label="Clear search" data-clear-search hidden>
+                <img src="./assets/icons/eraseicon.svg" alt="">
+              </button>
+              <div id="searchSuggestions" class="search-suggestions" data-search-suggestions hidden>
+                <p class="search-suggestions-title">Last searches</p>
+                <div class="search-suggestions-list" role="listbox" aria-label="Last searches"></div>
+              </div>
+            </div>
+            <button id="mainFilterToggle" class="main-filter-button" type="button" aria-expanded="false" aria-controls="mainFilterSheet" aria-label="Filter places" hidden>
+              <img src="./assets/icons/filtericon.svg" alt="">
+              <span id="mainFilterBadge" class="filter-count-badge" aria-hidden="true" hidden></span>
+            </button>
+          </div>
+          <div id="mainFilterSheet" class="main-filter-sheet" hidden>
+            <div class="filter-sheet-card" role="dialog" aria-label="Filter places">
+              <h2>Filter places</h2>
+              <div class="sheet-category-filters category-filters" aria-label="Main category filters">
+                <button class="filter-button active" data-category="Cafe" type="button">
+                  <span class="filter-checkbox" aria-hidden="true"></span>
+                  <img src="./assets/icons/cafe-marker.png" alt=""> Cafe
+                </button>
+                <button class="filter-button active" data-category="Pub/Bar" type="button">
+                  <span class="filter-checkbox" aria-hidden="true"></span>
+                  <img src="./assets/icons/pub-marker.png" alt=""> Pub/Bar
+                </button>
+                <button class="filter-button active" data-category="Park" type="button">
+                  <span class="filter-checkbox" aria-hidden="true"></span>
+                  <img src="./assets/icons/park-marker.png" alt=""> Park
+                </button>
+                <button class="filter-button active" data-category="Shop" type="button">
+                  <span class="filter-checkbox" aria-hidden="true"></span>
+                  <img src="./assets/icons/shop-marker.png" alt=""> Shop
+                </button>
+              </div>
+              <div class="sheet-feature-filters" aria-label="Main feature filters">
+                <button class="feature-filter-button" data-feature-filter="rainyDays" type="button" aria-pressed="false" aria-label="Rainy days">
+                  <span class="feature-toggle" aria-hidden="true">
+                    <span class="feature-toggle-knob">
+                      <img src="./assets/icons/umbrella.svg" alt="">
+                    </span>
+                  </span>
+                </button>
+                <button class="feature-filter-button" data-feature-filter="instagram" type="button" aria-pressed="false" aria-label="Instagram">
+                  <span class="feature-toggle" aria-hidden="true">
+                    <span class="feature-toggle-knob">
+                      <img src="./assets/icons/instagramicon.svg" alt="">
+                    </span>
+                  </span>
+                </button>
+              </div>
+              <p class="filter-empty-state" data-filter-empty-state hidden>
+                We couldn't fetch any results.
+                <button type="button" data-reset-filters>Reset all filters</button>
+              </p>
+            </div>
           </div>
         </div>
 
