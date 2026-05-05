@@ -549,7 +549,14 @@ h1 {
 }
 
 .desktop-feature-filters {
+  --feature-toggle-width: 60px;
+  --feature-toggle-height: 36px;
+  --feature-toggle-padding: 4px;
+  --feature-toggle-knob-size: 26px;
+  --feature-toggle-knob-shift: 24px;
+  --feature-toggle-icon-size: 16px;
   display: flex;
+  align-items: center;
   gap: 8px;
   padding: 0 2px;
 }
