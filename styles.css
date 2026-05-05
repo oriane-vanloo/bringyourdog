@@ -506,6 +506,47 @@ h1 {
   padding: 0 2px;
 }
 
+.filter-empty-state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 2px;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.filter-empty-state[hidden] {
+  display: none;
+}
+
+.filter-empty-state button {
+  border: 0;
+  padding: 0;
+  color: var(--foreground);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(30, 41, 59, 0.28);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.filter-empty-state button:hover {
+  color: var(--button);
+  text-decoration-color: currentColor;
+}
+
+.filter-sheet-card .filter-empty-state {
+  padding-top: 16px;
+}
+
 .map-expand-toggle {
   position: absolute;
   z-index: 610;
@@ -1246,6 +1287,44 @@ h1 {
   margin: -3px 0 2px;
   padding: 0;
   list-style: none;
+}
+
+.list-empty-card {
+  padding: 18px 4px 8px;
+  color: var(--muted);
+  list-style: none;
+}
+
+.list-empty-card p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.list-empty-card button {
+  border: 0;
+  padding: 0;
+  color: var(--foreground);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(30, 41, 59, 0.28);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.list-empty-card button:hover {
+  color: var(--button);
+  text-decoration-color: currentColor;
 }
 
 .list-contact-card {

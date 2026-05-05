@@ -103,6 +103,7 @@ const selectedPlaceDefaultParent = selectedPlace.parentElement;
 const selectedPlaceDefaultNextSibling = selectedPlace.nextSibling;
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 const featureFilterButtons = [...document.querySelectorAll("[data-feature-filter]")];
+const filterEmptyStates = [...document.querySelectorAll("[data-filter-empty-state]")];
 const searchClearButtons = [...document.querySelectorAll("[data-clear-search]")];
 const searchSuggestionPanels = [...document.querySelectorAll("[data-search-suggestions]")];
 const sidebar = document.querySelector(".sidebar");
@@ -1041,6 +1042,18 @@ function renderList(filteredPlaces) {
   placeList.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
+  if (filteredPlaces.length === 0) {
+    const emptyItem = document.createElement("li");
+    emptyItem.className = "list-empty-card";
+    emptyItem.innerHTML = `
+      <p>
+        We couldn't fetch any results.
+        <button type="button" data-reset-filters>Reset all filters</button>
+      </p>
+    `;
+    fragment.append(emptyItem);
+  }
+
   filteredPlaces.forEach((place) => {
     const meta = categoryMeta[place.category];
     const location = getLocationParts(place.address);
@@ -1092,9 +1105,39 @@ function renderList(filteredPlaces) {
   placeList.append(fragment);
 }
 
+function resetToAllPlaces() {
+  window.clearTimeout(searchAnalyticsTimeout);
+  activeCategories.clear();
+  Object.keys(categoryMeta).forEach((category) => activeCategories.add(category));
+  activeFeatureFilters.clear();
+  selectedPlaceId = null;
+  lastAutoFittedSuburb = "";
+  searchInput.value = "";
+  if (expandedSearchInput) {
+    expandedSearchInput.value = "";
+  }
+
+  map.closePopup();
+  hideSearchSuggestions();
+  setExpandedFilterSheet(false);
+  updateSearchClearButtons();
+  trackEvent("filters_reset", {
+    reset_surface: currentMapSurface(),
+  });
+  render({ fitBounds: true });
+}
+
 function updateResultCount(filteredPlaces) {
   const count = filteredPlaces.length;
   resultCount.textContent = `${count} ${count === 1 ? "place" : "places"} shown`;
+}
+
+function updateNoResultsHints(filteredPlaces) {
+  const hasNoResults = filteredPlaces.length === 0;
+
+  filterEmptyStates.forEach((state) => {
+    state.hidden = !hasNoResults;
+  });
 }
 
 function updateFilterButtons() {
@@ -1214,6 +1257,7 @@ function render({ fitBounds = false } = {}) {
   renderMarkers(markerPlaces);
   renderList(filteredPlaces);
   updateResultCount(filteredPlaces);
+  updateNoResultsHints(filteredPlaces);
   updateFilterButtons();
   syncSelectedPlacePanel();
 
@@ -1598,6 +1642,16 @@ function setupFilters() {
       render();
       keepSelectedCardVisible();
     });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    if (event.target.closest("[data-reset-filters]")) {
+      resetToAllPlaces();
+    }
   });
 
   const handleSearchInput = (event) => {
