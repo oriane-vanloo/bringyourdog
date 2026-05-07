@@ -381,6 +381,31 @@ function getInitialSearchQuery() {
   }
 }
 
+function getInitialPlaceQuery() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return cleanSearchQuery(params.get("place") || params.get("placeName")).slice(0, 120);
+  } catch {
+    return "";
+  }
+}
+
+function placeLookupKey(value) {
+  return cleanSearchQuery(value).toLowerCase();
+}
+
+function findPlaceByInitialQuery(query) {
+  const target = placeLookupKey(query);
+
+  if (!target) {
+    return null;
+  }
+
+  return places.find((place) => placeLookupKey(place.name) === target)
+    || places.find((place) => placeLookupKey(`${place.name}, ${place.address}`) === target)
+    || null;
+}
+
 function getInitialFeatureFilters() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -1371,7 +1396,7 @@ function keepSelectedCardVisible({ behavior = "smooth" } = {}) {
 }
 
 function selectPlace(place, { openPopup = false, pan = false, source = "unknown" } = {}) {
-  const shouldExpandMobileMap = source === "map_marker" && shouldApplyMobileMapBounds();
+  const shouldExpandMobileMap = (source === "map_marker" || source === "guide_card") && shouldApplyMobileMapBounds();
   const shouldSuppressListPan = source === "list_card" && shouldApplyMobileMapBounds();
   const selectionSurface = currentMapSurface();
 
@@ -2391,6 +2416,7 @@ async function init() {
   places = await loadPlaces();
   setupMarkers();
   const initialSearchQuery = getInitialSearchQuery();
+  const initialPlace = findPlaceByInitialQuery(getInitialPlaceQuery());
   if (initialSearchQuery) {
     searchInput.value = initialSearchQuery;
     if (expandedSearchInput) {
@@ -2402,15 +2428,23 @@ async function init() {
   setupSearchSuggestions();
   setupDesktopSidebarGutterScroll();
   setupActionTracking();
+  if (initialPlace) {
+    selectedPlaceId = initialPlace.id;
+  }
   render({ fitBounds: true });
+  if (initialPlace) {
+    selectPlace(initialPlace, { openPopup: !shouldUseBottomSheet(), pan: true, source: "guide_card" });
+  }
   const initialFitVersion = mapInteractionVersion;
-  [60, 180, 420, 900].forEach((delay) => {
-    window.setTimeout(() => {
-      if (mapInteractionVersion === initialFitVersion) {
-        refreshMapLayout({ fitBounds: true });
-      }
-    }, delay);
-  });
+  if (!initialPlace) {
+    [60, 180, 420, 900].forEach((delay) => {
+      window.setTimeout(() => {
+        if (mapInteractionVersion === initialFitVersion) {
+          refreshMapLayout({ fitBounds: true });
+        }
+      }, delay);
+    });
+  }
 }
 
 initAnalytics();
