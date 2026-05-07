@@ -381,6 +381,27 @@ function getInitialSearchQuery() {
   }
 }
 
+function getInitialFeatureFilters() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const requestedFeatures = [
+      ...params.getAll("feature"),
+      ...params.getAll("features"),
+    ]
+      .flatMap((value) => String(value || "").split(","))
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    if (params.get("rainyDays") === "1" || params.get("rainy") === "1") {
+      requestedFeatures.push("rainyDays");
+    }
+
+    return requestedFeatures.filter((feature) => featureFilterMeta[feature]);
+  } catch {
+    return [];
+  }
+}
+
 function getSuburbPlaceCount(query) {
   const targetSuburb = cleanSearchQuery(query).toLowerCase();
 
@@ -1100,12 +1121,13 @@ function renderList(filteredPlaces) {
   contactItem.innerHTML = `
     <p class="contact-copy">
       <span>Know a dog-friendly business not listed here?</span>
-      <span class="contact-action">
-        Reach out to
+      <span class="contact-action instagram-dm-cta">
+        Send
+        ${instagramIconHtml()}
         <a href="https://www.instagram.com/kirathesmol" target="_blank" rel="noopener noreferrer" data-analytics-link="kira-instagram">
-          ${instagramIconHtml()}
-          <span>kirathesmol</span>
+          <span>@kirathesmol</span>
         </a>
+        a DM
       </span>
     </p>
     <p class="contact-copyright">
@@ -1845,6 +1867,119 @@ function setupDesktopSidebarGutterScroll() {
   }, { passive: false });
 }
 
+function shouldUsePageSectionScroll() {
+  return !mobileMapQuery.matches && !document.body.classList.contains("map-expanded");
+}
+
+function getWheelDeltaPixels(event) {
+  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return event.deltaY * 16;
+  }
+
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return event.deltaY * window.innerHeight;
+  }
+
+  return event.deltaY;
+}
+
+function setupPageSectionSnapping() {
+  const guideSection = document.querySelector("#melbourneGuide");
+  if (!guideSection) {
+    return;
+  }
+
+  let snapTimer = null;
+  let isSnapping = false;
+
+  const scrollToSection = (targetTop) => {
+    isSnapping = true;
+    window.scrollTo({
+      top: targetTop,
+      behavior: "smooth",
+    });
+    window.setTimeout(() => {
+      isSnapping = false;
+    }, 560);
+  };
+
+  const snapIfBetweenSections = () => {
+    if (!shouldUsePageSectionScroll() || isSnapping) {
+      return;
+    }
+
+    const guideTop = guideSection.offsetTop;
+    const currentScroll = window.scrollY || document.documentElement.scrollTop || 0;
+
+    if (currentScroll <= 0 || currentScroll >= guideTop) {
+      return;
+    }
+
+    scrollToSection(currentScroll < guideTop / 2 ? 0 : guideTop);
+  };
+
+  const alignGuideHash = () => {
+    if (window.location.hash !== "#melbourneGuide" && window.location.hash !== "#seoTitle") {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      guideSection.scrollIntoView({ block: "start" });
+    });
+  };
+
+  window.addEventListener("scroll", () => {
+    if (!shouldUsePageSectionScroll() || isSnapping) {
+      return;
+    }
+
+    window.clearTimeout(snapTimer);
+    snapTimer = window.setTimeout(snapIfBetweenSections, 120);
+  }, { passive: true });
+
+  window.addEventListener("hashchange", alignGuideHash);
+  alignGuideHash();
+}
+
+function setupDesktopMapWheelPageScroll() {
+  const guideSection = document.querySelector("#melbourneGuide");
+  if (!mapElement || !guideSection) {
+    return;
+  }
+
+  mapElement.addEventListener("wheel", (event) => {
+    if (!shouldUsePageSectionScroll() || event.ctrlKey || event.metaKey || event.defaultPrevented) {
+      return;
+    }
+
+    if (event.target instanceof Element && event.target.closest(".leaflet-control, .map-overlay, .desktop-zoom-controls, .map-locate-toggle, .map-expand-toggle")) {
+      return;
+    }
+
+    const deltaY = getWheelDeltaPixels(event);
+    if (Math.abs(deltaY) <= Math.abs(event.deltaX)) {
+      return;
+    }
+
+    const guideTop = guideSection.offsetTop;
+    const currentScroll = window.scrollY || document.documentElement.scrollTop || 0;
+    const targetTop = deltaY > 0 ? guideTop : 0;
+
+    if ((deltaY > 0 && currentScroll >= guideTop) || (deltaY < 0 && currentScroll <= 0)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    cancelPendingMapAutoposition();
+
+    window.scrollTo({
+      top: targetTop,
+      behavior: "smooth",
+    });
+  }, { capture: true, passive: false });
+}
+
 function setupActionTracking() {
   document.addEventListener("click", (event) => {
     if (!(event.target instanceof Element)) {
@@ -2250,6 +2385,8 @@ async function init() {
   setupMobileViewportFiltering();
   setupMapInteractionGuards();
   setupLocationControl();
+  setupPageSectionSnapping();
+  setupDesktopMapWheelPageScroll();
 
   places = await loadPlaces();
   setupMarkers();
@@ -2261,6 +2398,7 @@ async function init() {
     }
   }
   setupFilters();
+  getInitialFeatureFilters().forEach((feature) => activeFeatureFilters.add(feature));
   setupSearchSuggestions();
   setupDesktopSidebarGutterScroll();
   setupActionTracking();

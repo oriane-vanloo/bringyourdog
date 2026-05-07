@@ -51,6 +51,24 @@ body::before {
   background-repeat: repeat;
 }
 
+@media (min-width: 861px) {
+  html,
+  body {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  .app-shell,
+  .seo-content {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .seo-content {
+    min-height: 100vh;
+  }
+}
+
 @keyframes photo-skeleton {
   0% {
     background-position: 220% 0, 0 0;
@@ -1703,6 +1721,14 @@ h1 {
   margin: 0 auto;
 }
 
+.seo-section-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+
 .seo-heading {
   display: grid;
   max-width: 760px;
@@ -1810,10 +1836,52 @@ h1 {
   color: var(--button);
 }
 
+.instagram-dm-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.instagram-dm-icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.instagram-dm-cta .instagram-link-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.instagram-dm-cta a {
+  color: var(--foreground);
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.instagram-dm-cta a:hover {
+  color: var(--button);
+}
+
 .guide-page {
   min-height: 100%;
   height: auto;
   overflow-x: hidden;
+  background: #fffdf5;
+}
+
+.guide-page::after {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.78), transparent 360px),
+    #fffdf5;
 }
 
 .guide-shell {
@@ -1841,6 +1909,13 @@ h1 {
   gap: 18px;
 }
 
+.guide-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 18px;
+}
+
 .guide-brand {
   display: inline-flex;
   align-items: center;
@@ -1862,8 +1937,11 @@ h1 {
 .guide-nav-link,
 .guide-secondary {
   color: var(--foreground);
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.04em;
   text-decoration: none;
+  text-transform: uppercase;
 }
 
 .guide-nav-link:hover,
@@ -1935,37 +2013,38 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 10px 14px;
 }
 
-.guide-primary,
-.guide-secondary {
+.guide-map-link {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   min-width: 0;
-  min-height: 46px;
-  border-radius: 999px;
-  padding: 0 18px;
+  color: var(--foreground);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-decoration-line: underline;
+  text-decoration-color: rgba(30, 41, 59, 0.34);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
   text-transform: uppercase;
 }
 
-.guide-primary {
-  color: #ffffff;
-  text-decoration: none;
-  background: var(--button);
+.guide-map-link + .guide-map-link::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  margin-right: 14px;
+  background: rgba(30, 41, 59, 0.36);
 }
 
-.guide-primary:hover {
-  background: var(--button-hover);
-}
-
-.guide-secondary {
-  border: 1px solid var(--border);
-  background: #ffffff;
+.guide-map-link:hover {
+  color: var(--button);
+  text-decoration-color: currentColor;
 }
 
 .guide-hero-image {
@@ -2048,6 +2127,11 @@ h1 {
   background: #e6f3ff;
 }
 
+.guide-tag.sheltered {
+  color: #4F3261;
+  background: #F4E8FF;
+}
+
 .guide-tips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2069,6 +2153,81 @@ h1 {
   margin-bottom: 8px;
   color: var(--foreground);
   font-size: 18px;
+}
+
+.guide-neighbour-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: min(1120px, 100%);
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.guide-neighbour-nav a {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 28px;
+  padding: 12px 12px 20px;
+  color: var(--foreground);
+  background: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 18px 42px -34px rgba(30, 41, 59, 0.3);
+}
+
+.guide-neighbour-nav img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.guide-neighbour-nav a:last-child {
+  grid-column: 3;
+  text-align: right;
+}
+
+.guide-neighbour-nav a:hover {
+  color: var(--button);
+  transform: translateY(-2px);
+}
+
+.guide-neighbour-nav span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.guide-neighbour-nav a:last-child span {
+  justify-self: end;
+}
+
+.guide-neighbour-nav strong {
+  padding: 0 10px;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.guide-neighbour-nav a:first-child span::before,
+.guide-neighbour-nav a:last-child span::after {
+  color: currentColor;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.guide-neighbour-nav a:first-child span::before {
+  content: "‹";
+}
+
+.guide-neighbour-nav a:last-child span::after {
+  content: "›";
 }
 
 .guide-footer {
@@ -2430,6 +2589,12 @@ h1 {
     gap: 24px;
   }
 
+  .seo-section-nav {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .seo-heading h2 {
     font-size: clamp(32px, 10vw, 44px);
   }
@@ -2466,7 +2631,8 @@ h1 {
   .guide-nav,
   .guide-hero,
   .guide-section,
-  .guide-footer {
+  .guide-footer,
+  .guide-neighbour-nav {
     width: 100%;
     max-width: 100%;
     padding-right: 36px;
@@ -2474,11 +2640,15 @@ h1 {
 
   .guide-nav {
     align-items: flex-start;
+    flex-direction: column;
     justify-content: flex-start;
+    gap: 12px;
   }
 
-  .guide-nav-link {
-    display: none;
+  .guide-nav-links {
+    max-width: 100%;
+    justify-content: flex-start;
+    gap: 6px 14px;
   }
 
   .guide-brand img {
@@ -2511,14 +2681,12 @@ h1 {
   }
 
   .guide-actions {
-    display: grid;
-    grid-template-columns: 1fr;
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .guide-primary,
-  .guide-secondary {
-    width: 100%;
-    max-width: 100%;
+  .guide-map-link + .guide-map-link::before {
+    content: none;
   }
 
   .guide-hero-image {
@@ -2536,6 +2704,24 @@ h1 {
 
   .guide-place-card,
   .guide-tip {
+    border-radius: 24px;
+    padding: 18px;
+  }
+
+  .guide-neighbour-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-neighbour-nav a:last-child {
+    grid-column: auto;
+    text-align: left;
+  }
+
+  .guide-neighbour-nav a:last-child span {
+    justify-self: start;
+  }
+
+  .guide-neighbour-nav a {
     border-radius: 24px;
     padding: 18px;
   }
