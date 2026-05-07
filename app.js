@@ -1157,7 +1157,7 @@ function renderList(filteredPlaces) {
     </p>
     <p class="contact-copyright">
       © Designed with 💖 by
-      <a href="http://orianevanloo.site/" target="_blank" rel="noopener noreferrer" data-analytics-link="portfolio-website">Oriane Van Loo</a>
+      <a href="https://orianevanloo.site/" target="_blank" rel="noopener noreferrer" data-analytics-link="portfolio-website">Oriane Van Loo</a>
     </p>
   `;
   fragment.append(contactItem);

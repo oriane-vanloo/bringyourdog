@@ -2092,6 +2092,11 @@ h1 {
   transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
+.guide-place-card,
+.guide-place-card * {
+  text-decoration: none;
+}
+
 .guide-place-card:hover,
 .guide-place-card:focus-visible {
   border-color: rgba(254, 155, 171, 0.75);
