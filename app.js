@@ -372,6 +372,15 @@ function cleanSearchQuery(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
+function getInitialSearchQuery() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return cleanSearchQuery(params.get("q")).slice(0, 80);
+  } catch {
+    return "";
+  }
+}
+
 function getSuburbPlaceCount(query) {
   const targetSuburb = cleanSearchQuery(query).toLowerCase();
 
@@ -2244,6 +2253,13 @@ async function init() {
 
   places = await loadPlaces();
   setupMarkers();
+  const initialSearchQuery = getInitialSearchQuery();
+  if (initialSearchQuery) {
+    searchInput.value = initialSearchQuery;
+    if (expandedSearchInput) {
+      expandedSearchInput.value = initialSearchQuery;
+    }
+  }
   setupFilters();
   setupSearchSuggestions();
   setupDesktopSidebarGutterScroll();
