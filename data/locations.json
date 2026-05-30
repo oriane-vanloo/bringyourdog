@@ -71,7 +71,12 @@
     "description": "Dogs allowed off-leash on unfenced sporting grounds when not in use.",
     "lat": -37.8027268,
     "lng": 144.9796112,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "aliases": [
+      "Atherton Gardens",
+      "Atherton Reserve sporting ground",
+      "Atherton dog park"
+    ]
   },
   {
     "name": "Brookville Gardens",
@@ -144,7 +149,11 @@
     "description": "Dog on-leash and off-leash zones are marked in the park.",
     "lat": -37.8283779,
     "lng": 145.0013798,
-    "geocodeSource": "manual"
+    "geocodeSource": "manual",
+    "aliases": [
+      "Barkly Gardens dog park",
+      "Barkly Gardens off-leash area"
+    ]
   },
   {
     "name": "Beachcomber Cafe",
@@ -298,7 +307,12 @@
     "description": "Dogs allowed off-leash when sporting grounds are not in use.",
     "lat": -37.8167629,
     "lng": 145.0006686,
-    "geocodeSource": "manual"
+    "geocodeSource": "manual",
+    "aliases": [
+      "Citizens Park Oval",
+      "Richmond Citizens Park",
+      "Citizens Park dog park"
+    ]
   },
   {
     "name": "College Lawn Hotel",
@@ -316,7 +330,14 @@
     "description": "Dogs allowed off-leash in Thomas Oval Dog Park.",
     "lat": -37.8370865,
     "lng": 145.0027238,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "aliases": [
+      "Como Park",
+      "Como Park Dog Park",
+      "Thomas Oval",
+      "Thomas Oval Dog Park",
+      "Thomas Oval Fenced Dog Park"
+    ]
   },
   {
     "name": "Coquette Clothes",
@@ -392,6 +413,15 @@
     "geocodeSource": "nominatim"
   },
   {
+    "name": "Donny's",
+    "address": "61 High St Northcote VIC 3070",
+    "category": "Pub/Bar",
+    "description": "Dogs welcome at this neighbourhood bar with dog courtyard.",
+    "lat": -37.7807053,
+    "lng": 144.9966061,
+    "geocodeSource": "facebook+nominatim"
+  },
+  {
     "name": "Dr Morse Bar & Eatery",
     "address": "274 Johnston St Abbotsford VIC 3067",
     "category": "Pub/Bar",
@@ -434,7 +464,12 @@
     "description": "Designated dog off-leash areas with water taps and toilets.",
     "lat": -37.8413214,
     "lng": 144.9844022,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "aliases": [
+      "Fawkner Park dog park",
+      "Commercial Road off-leash area",
+      "St Kilda Road off-leash area"
+    ]
   },
   {
     "name": "Field Black Cafe",
@@ -683,6 +718,16 @@
     "geocodeSource": "nominatim"
   },
   {
+    "name": "Little Hop",
+    "address": "277 Brunswick St Fitzroy VIC 3065",
+    "category": "Cafe",
+    "description": "Doggie tacos and dog brews available; staff love dogs.",
+    "lat": -37.798817,
+    "lng": 144.978111,
+    "geocodeSource": "facebook+near-place",
+    "instagramUrl": "https://www.instagram.com/littlehop_fitzroy/"
+  },
+  {
     "name": "Little Local",
     "address": "299 High St Northcote VIC 3070",
     "category": "Cafe",
@@ -888,7 +933,14 @@
     "description": "Designated dog off-leash areas with sportsground restrictions.",
     "lat": -37.7906213,
     "lng": 144.9967427,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "aliases": [
+      "Quarries Park dog off-leash area",
+      "Quarries Park dog park",
+      "Yambla Reserve",
+      "Yambla Reserve Pitch",
+      "Yambla Reserve Soccer Pitch"
+    ]
   },
   {
     "name": "Raph's Deli",
@@ -1346,7 +1398,13 @@
     "description": "Dogs allowed off-leash on the oval when sports grounds are not in use.",
     "lat": -37.796984,
     "lng": 144.9956933,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "aliases": [
+      "Vic Park",
+      "Victoria Park",
+      "Victoria Park Oval",
+      "Victoria Park dog park"
+    ]
   },
   {
     "name": "Welcome to Brunswick",
@@ -1436,7 +1494,11 @@
     "description": "Dog off-leash area; dogs prohibited on sports grounds during organised sport.",
     "geocodeSource": "yarra+nominatim",
     "lat": -37.8250151,
-    "lng": 145.0147064
+    "lng": 145.0147064,
+    "aliases": [
+      "Burnley Park dog park",
+      "Burnley Oval"
+    ]
   },
   {
     "name": "Coate Park",
@@ -1562,7 +1624,12 @@
     "description": "Large fenced dog off-leash park.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.7960118,
-    "lng": 144.9390709
+    "lng": 144.9390709,
+    "aliases": [
+      "Clayton Reserve dog park",
+      "Macaulay Road dog park",
+      "North Melbourne dog park"
+    ]
   },
   {
     "name": "Gosch's Paddock",
@@ -1571,7 +1638,12 @@
     "description": "Dogs allowed off-leash in grassy areas between the ovals.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.8259527,
-    "lng": 144.9868017
+    "lng": 144.9868017,
+    "aliases": [
+      "Goschs Paddock",
+      "Gosch's Paddock ovals",
+      "Goschs Paddock ovals"
+    ]
   },
   {
     "name": "Kings Way and Moray Street Reserve",
@@ -1580,7 +1652,14 @@
     "description": "Fully fenced off-leash dog park with dog play equipment and drinking fountain.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.8271239,
-    "lng": 144.9606687
+    "lng": 144.9606687,
+    "aliases": [
+      "Kingsway fenced dog park",
+      "Kings Way dog park",
+      "Kings Way and Moray Street dog park",
+      "Moray Street dog park",
+      "Southbank dog park"
+    ]
   },
   {
     "name": "North Melbourne Recreation Reserve",
@@ -1589,7 +1668,12 @@
     "description": "Dog off-leash area around Arden Oval.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.7991416,
-    "lng": 144.9414086
+    "lng": 144.9414086,
+    "aliases": [
+      "Arden Oval",
+      "Arden Street Oval",
+      "North Melbourne Recreation Reserve off-leash area"
+    ]
   },
   {
     "name": "Point Park",
@@ -1607,7 +1691,15 @@
     "description": "Designated off-leash areas including Crawford Oval and Bowen Crescent.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.7837511,
-    "lng": 144.9618312
+    "lng": 144.9618312,
+    "aliases": [
+      "Bowen Crescent",
+      "Bowen Crescent dog park",
+      "Crawford Oval",
+      "Crawford Oval dog park",
+      "Princes Park dog park",
+      "Princes Park off-leash area"
+    ]
   },
   {
     "name": "Riverside Park",
@@ -1625,7 +1717,12 @@
     "description": "Dogs can be off-leash south of Macarthur Road.",
     "geocodeSource": "melbourne+nominatim",
     "lat": -37.7881362,
-    "lng": 144.954963
+    "lng": 144.954963,
+    "aliases": [
+      "Macarthur Road oval",
+      "Royal Park south oval",
+      "Royal Park dog park"
+    ]
   },
   {
     "name": "Alma Park",
@@ -1643,7 +1740,12 @@
     "description": "Eastern Reserve North is a fenced dog off-leash park.",
     "geocodeSource": "port-phillip+nominatim",
     "lat": -37.8344728,
-    "lng": 144.965799
+    "lng": 144.965799,
+    "aliases": [
+      "Eastern Reserve North",
+      "Eastern Reserve North dog park",
+      "Eastern Reserve fenced dog park"
+    ]
   },
   {
     "name": "Elwood Park and Foreshore",
@@ -1697,7 +1799,12 @@
     "description": "Dogs can be off-leash on Marine Parade.",
     "geocodeSource": "port-phillip+nominatim",
     "lat": -37.8687513,
-    "lng": 144.9756163
+    "lng": 144.9756163,
+    "aliases": [
+      "M.O. Moran Reserve",
+      "MO Moran Reserve",
+      "Moran Reserve dog park"
+    ]
   },
   {
     "name": "Peanut Farm Reserve",
@@ -1706,7 +1813,12 @@
     "description": "Dog off-leash sports reserve; check temporary sportsground closures.",
     "geocodeSource": "port-phillip+nominatim",
     "lat": -37.8700115,
-    "lng": 144.9785777
+    "lng": 144.9785777,
+    "aliases": [
+      "Peanut Farm Oval",
+      "Peanut Farm dog park",
+      "Peanut Farm sports reserve"
+    ]
   },
   {
     "name": "R.F. Julier Reserve",
@@ -1796,7 +1908,12 @@
     "description": "Dogs can be off-leash, with an enclosed dog park area.",
     "geocodeSource": "merri-bek+nominatim",
     "lat": -37.7686088,
-    "lng": 144.950198
+    "lng": 144.950198,
+    "aliases": [
+      "Gilpin Park fenced dog park",
+      "Gilpin Park enclosed dog park",
+      "Brunswick fenced dog park"
+    ]
   },
   {
     "name": "Holbrook Reserve",
@@ -1850,7 +1967,12 @@
     "description": "Dogs can be off-leash in the reserve.",
     "geocodeSource": "merri-bek+nominatim",
     "lat": -37.7645525,
-    "lng": 144.9496529
+    "lng": 144.9496529,
+    "aliases": [
+      "Reaburn Reserve dog park",
+      "Hope Street dog park",
+      "133A Hope Street dog park"
+    ]
   },
   {
     "name": "Roberts Reserve",

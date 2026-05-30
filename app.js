@@ -262,14 +262,17 @@ function placeMatches(place, query) {
     return true;
   }
 
+  const normalizedQuery = query.toLowerCase();
   const haystack = [
     place.name,
     place.address,
     place.category,
     place.description,
+    ...(Array.isArray(place.aliases) ? place.aliases : []),
   ].join(" ").toLowerCase();
 
-  return haystack.includes(query.toLowerCase());
+  return haystack.includes(normalizedQuery)
+    || normalizedQuery.split(/\s+/).filter(Boolean).every((term) => haystack.includes(term));
 }
 
 function placeMatchesFeatureFilter(place, feature) {
@@ -403,6 +406,8 @@ function findPlaceByInitialQuery(query) {
 
   return places.find((place) => placeLookupKey(place.name) === target)
     || places.find((place) => placeLookupKey(`${place.name}, ${place.address}`) === target)
+    || places.find((place) => Array.isArray(place.aliases) && place.aliases.some((alias) => placeLookupKey(alias) === target))
+    || places.find((place) => Array.isArray(place.aliases) && place.aliases.some((alias) => placeLookupKey(`${alias}, ${place.address}`) === target))
     || null;
 }
 
@@ -2394,7 +2399,7 @@ async function init() {
   }).setView(MELBOURNE_CENTER, 12);
   map.attributionControl.setPrefix(false);
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
     fadeAnimation: false,
     maxZoom: 19,
     keepBuffer: 4,

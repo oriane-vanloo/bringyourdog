@@ -135,6 +135,7 @@ input:focus-visible {
 }
 
 #map {
+  position: relative;
   flex: 1 1 auto;
   width: 100%;
   min-height: 0;
@@ -143,6 +144,15 @@ input:focus-visible {
   border-radius: 0;
   box-shadow: none;
   background: var(--soft-surface);
+}
+
+#map::after {
+  position: absolute;
+  z-index: 250;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: rgba(30, 41, 59, 0.02);
 }
 
 .leaflet-container {
