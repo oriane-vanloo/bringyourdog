@@ -1126,11 +1126,24 @@ function restoreSelectedPlacePosition() {
   placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
 }
 
+function showSwipeHint() {
+  const HINT_KEY = "bydog_swipe_hint";
+  if (localStorage.getItem(HINT_KEY)) return;
+  localStorage.setItem(HINT_KEY, "1");
+  window.setTimeout(() => {
+    selectedPlace.classList.add("swipe-hint-active");
+    selectedPlace.addEventListener("animationend", () => {
+      selectedPlace.classList.remove("swipe-hint-active");
+    }, { once: true });
+  }, 1500);
+}
+
 function positionSelectedPlace(selectedPlaceInView) {
   if (mobileMapQuery.matches && isMapExpanded) {
     placeList.querySelectorAll(".selected-place-inline").forEach((slot) => slot.remove());
     placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
     mapPanel.append(selectedPlace);
+    showSwipeHint();
     return;
   }
 
@@ -2482,11 +2495,13 @@ function setupMapInteractionGuards() {
     const deltaX = event.changedTouches[0].clientX - swipeTouchStartX;
     swipeTouchStartX = null;
 
-    if (Math.abs(deltaX) < 50) {
+    if (Math.abs(deltaX) < 80) {
       return;
     }
 
-    const filteredPlaces = getFilteredPlaces({ includeMapBounds: false });
+    const filteredPlaces = getFilteredPlaces({ includeMapBounds: false })
+      .slice()
+      .sort((a, b) => b.lat - a.lat || a.lng - b.lng);
     const currentIndex = filteredPlaces.findIndex((p) => p.id === selectedPlaceId);
     if (currentIndex < 0) {
       return;
