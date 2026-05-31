@@ -29,9 +29,11 @@ const categoryMeta = {
 const featureFilterMeta = {
   rainyDays: {
     label: "Rainy days",
+    tooltip: "Sheltered",
   },
   instagram: {
     label: "Instagram",
+    tooltip: "With Instagram",
   },
 };
 
@@ -1126,6 +1128,29 @@ function restoreSelectedPlacePosition() {
   placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
 }
 
+let filterToastTimer = null;
+
+function showFilterToast(text) {
+  // Remove any existing toast immediately
+  document.querySelector(".filter-toast")?.remove();
+  clearTimeout(filterToastTimer);
+
+  const toast = document.createElement("div");
+  toast.className = "filter-toast";
+  toast.textContent = text;
+  document.body.append(toast);
+
+  // Trigger enter transition on next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => toast.classList.add("filter-toast-visible"));
+  });
+
+  filterToastTimer = setTimeout(() => {
+    toast.classList.remove("filter-toast-visible");
+    toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+  }, 2000);
+}
+
 function showSwipeHint() {
   const HINT_KEY = "bydog_swipe_hint";
   if (localStorage.getItem(HINT_KEY)) return;
@@ -1179,53 +1204,6 @@ function showSwipeHint() {
   }, 1200);
 }
 
-function animateCardSwipe(direction, doSelect) {
-  const rect = selectedPlace.getBoundingClientRect();
-
-  // Snapshot the current card as an outgoing overlay
-  const outgoing = selectedPlace.cloneNode(true);
-  const os = outgoing.style;
-  os.setProperty("position", "fixed", "important");
-  os.setProperty("left", `${rect.left}px`, "important");
-  os.setProperty("top", `${rect.top}px`, "important");
-  os.setProperty("right", "auto", "important");
-  os.setProperty("bottom", "auto", "important");
-  os.setProperty("width", `${rect.width}px`, "important");
-  os.setProperty("min-height", "0", "important");
-  os.setProperty("max-height", `${rect.height}px`, "important");
-  os.setProperty("overflow", "hidden", "important");
-  os.setProperty("pointer-events", "none", "important");
-  os.setProperty("margin", "0", "important");
-  os.setProperty("z-index", "1899", "important");
-  document.body.append(outgoing);
-
-  const gap = 20;
-  const exitX = direction === "left" ? -(rect.width + gap) : rect.width + gap;
-  const enterX = direction === "left" ? rect.width + gap : -(rect.width + gap);
-
-  const timing = { duration: 360, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "none" };
-
-  // Slide old card out (shrinks as it goes)
-  outgoing.animate(
-    [
-      { transform: "translateX(0) scale(1)", opacity: 1 },
-      { transform: `translateX(${exitX}px) scale(0.88)`, opacity: 0 },
-    ],
-    timing
-  ).addEventListener("finish", () => outgoing.remove());
-
-  // Update card content synchronously
-  doSelect();
-
-  // Slide new card in from the opposite side (grows as it arrives)
-  selectedPlace.animate(
-    [
-      { transform: `translateX(${enterX}px) scale(0.88)`, opacity: 0 },
-      { transform: "translateX(0) scale(1)", opacity: 1 },
-    ],
-    { ...timing, fill: "backwards" }
-  );
-}
 
 function positionSelectedPlace(selectedPlaceInView) {
   if (mobileMapQuery.matches && isMapExpanded) {
@@ -2084,10 +2062,15 @@ function setupFilters() {
         return;
       }
 
-      if (activeFeatureFilters.has(feature)) {
+      const wasEnabled = activeFeatureFilters.has(feature);
+      if (wasEnabled) {
         activeFeatureFilters.delete(feature);
       } else {
         activeFeatureFilters.add(feature);
+        const tooltip = featureFilterMeta[feature]?.tooltip;
+        if (tooltip && mobileMapQuery.matches) {
+          showFilterToast(tooltip);
+        }
       }
 
       trackEvent("feature_filter_toggle", {
@@ -2569,42 +2552,178 @@ function setupMapInteractionGuards() {
   mapElement.addEventListener("touchstart", cancelPendingMapAutoposition, { passive: true });
   mapElement.addEventListener("wheel", cancelPendingMapAutoposition, { passive: true });
 
-  let swipeTouchStartX = null;
+  // Drag-to-swipe on the expanded map card
+  let swipeDrag = null;
 
   selectedPlace.addEventListener("touchstart", (event) => {
-    swipeTouchStartX = event.touches[0].clientX;
+    if (!isMapExpanded || !mobileMapQuery.matches) return;
+    swipeDrag = {
+      startX: event.touches[0].clientX,
+      startY: event.touches[0].clientY,
+      direction: null,
+      peekCard: null,
+      filteredPlaces: null,
+      currentIndex: -1,
+      adjacentIndex: -1,
+      rect: null,
+      locked: false,
+    };
   }, { passive: true });
 
+  selectedPlace.addEventListener("touchmove", (event) => {
+    if (!swipeDrag || swipeDrag.locked) return;
+
+    const touch = event.touches[0];
+    const dx = touch.clientX - swipeDrag.startX;
+    const dy = touch.clientY - swipeDrag.startY;
+
+    if (!swipeDrag.direction) {
+      // Wait for intentional movement before locking axis
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      // Vertical scroll wins → abort
+      if (Math.abs(dy) >= Math.abs(dx)) {
+        swipeDrag.locked = true;
+        return;
+      }
+      swipeDrag.direction = dx < 0 ? "left" : "right";
+
+      // Find the adjacent place
+      const filteredPlaces = getFilteredPlaces({ includeMapBounds: false })
+        .slice()
+        .sort((a, b) => b.lat - a.lat || a.lng - b.lng);
+      const currentIndex = filteredPlaces.findIndex((p) => p.id === selectedPlaceId);
+      const adjacentIndex = swipeDrag.direction === "left"
+        ? Math.min(currentIndex + 1, filteredPlaces.length - 1)
+        : Math.max(currentIndex - 1, 0);
+
+      if (currentIndex < 0 || adjacentIndex === currentIndex) {
+        swipeDrag.locked = true;
+        return;
+      }
+
+      swipeDrag.filteredPlaces = filteredPlaces;
+      swipeDrag.currentIndex = currentIndex;
+      swipeDrag.adjacentIndex = adjacentIndex;
+
+      const rect = selectedPlace.getBoundingClientRect();
+      swipeDrag.rect = rect;
+
+      // Build peek card off the appropriate edge
+      const peekPlace = filteredPlaces[adjacentIndex];
+      const peek = document.createElement("div");
+      peek.className = "swipe-hint-peek";
+      const peekLeft = swipeDrag.direction === "left"
+        ? rect.right + 12
+        : rect.left - rect.width - 12;
+      peek.style.cssText = [
+        "position:fixed",
+        "z-index:1898",
+        `left:${peekLeft}px`,
+        `bottom:${window.innerHeight - rect.bottom}px`,
+        `width:${rect.width}px`,
+        `min-height:${rect.height}px`,
+      ].join(";");
+      peek.innerHTML = `
+        <div class="selected-tags">
+          <span class="tag ${categoryClass(peekPlace.category)}">${escapeHtml(peekPlace.category)}</span>
+        </div>
+        <h2>${escapeHtml(peekPlace.name)}</h2>
+      `;
+      document.body.append(peek);
+      swipeDrag.peekCard = peek;
+    }
+
+    // Clamp to the locked direction so you can't accidentally reverse mid-drag
+    const clampedDx = swipeDrag.direction === "left" ? Math.min(dx, 0) : Math.max(dx, 0);
+    const progress = Math.min(Math.abs(clampedDx) / swipeDrag.rect.width, 1);
+    const peekScale = 0.88 + 0.12 * progress;
+
+    selectedPlace.style.transform = `translateX(${clampedDx}px)`;
+    swipeDrag.peekCard.style.transform = `translateX(${clampedDx}px) scale(${peekScale})`;
+
+    event.preventDefault(); // block scroll while dragging horizontally
+  }, { passive: false });
+
   selectedPlace.addEventListener("touchend", (event) => {
-    if (swipeTouchStartX === null || !isMapExpanded || !mobileMapQuery.matches) {
-      swipeTouchStartX = null;
+    if (!swipeDrag) return;
+    const drag = swipeDrag;
+    swipeDrag = null;
+
+    if (drag.locked || !drag.peekCard) {
+      selectedPlace.style.transform = "";
       return;
     }
 
-    const deltaX = event.changedTouches[0].clientX - swipeTouchStartX;
-    swipeTouchStartX = null;
+    const rawDx = event.changedTouches[0].clientX - drag.startX;
+    const clampedDx = drag.direction === "left" ? Math.min(rawDx, 0) : Math.max(rawDx, 0);
+    const THRESHOLD = 80;
+    const shouldComplete = Math.abs(clampedDx) >= THRESHOLD;
+    const timing = { duration: 300, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "none" };
 
-    if (Math.abs(deltaX) < 80) {
-      return;
-    }
+    if (shouldComplete) {
+      const exitX = drag.direction === "left" ? -(drag.rect.width + 20) : drag.rect.width + 20;
+      const enterX = drag.direction === "left" ? drag.rect.width + 12 : -(drag.rect.width + 12);
 
-    const filteredPlaces = getFilteredPlaces({ includeMapBounds: false })
-      .slice()
-      .sort((a, b) => b.lat - a.lat || a.lng - b.lng);
-    const currentIndex = filteredPlaces.findIndex((p) => p.id === selectedPlaceId);
-    if (currentIndex < 0) {
-      return;
-    }
+      // Clone current card as the outgoing visual (at its current drag offset)
+      const outgoing = selectedPlace.cloneNode(true);
+      const os = outgoing.style;
+      os.setProperty("position", "fixed", "important");
+      os.setProperty("left", `${drag.rect.left}px`, "important");
+      os.setProperty("top", `${drag.rect.top}px`, "important");
+      os.setProperty("right", "auto", "important");
+      os.setProperty("bottom", "auto", "important");
+      os.setProperty("width", `${drag.rect.width}px`, "important");
+      os.setProperty("min-height", "0", "important");
+      os.setProperty("max-height", `${drag.rect.height}px`, "important");
+      os.setProperty("overflow", "hidden", "important");
+      os.setProperty("pointer-events", "none", "important");
+      os.setProperty("margin", "0", "important");
+      os.setProperty("z-index", "1899", "important");
+      document.body.append(outgoing);
 
-    const nextIndex = deltaX < 0
-      ? Math.min(currentIndex + 1, filteredPlaces.length - 1)
-      : Math.max(currentIndex - 1, 0);
+      // Reset drag transform and update card content
+      selectedPlace.style.transform = "";
+      drag.peekCard.remove();
+      selectPlace(drag.filteredPlaces[drag.adjacentIndex], { openPopup: false, pan: true, source: "swipe" });
 
-    if (nextIndex !== currentIndex) {
-      const swipeDirection = deltaX < 0 ? "left" : "right";
-      animateCardSwipe(swipeDirection, () => {
-        selectPlace(filteredPlaces[nextIndex], { openPopup: false, pan: true, source: "swipe" });
-      });
+      // Fly outgoing card off-screen from wherever the drag left it
+      outgoing.animate(
+        [
+          { transform: `translateX(${clampedDx}px)` },
+          { transform: `translateX(${exitX}px)`, opacity: 0 },
+        ],
+        timing
+      ).addEventListener("finish", () => outgoing.remove());
+
+      // Fly new card in from the peek side, growing from small to full size
+      const progress = Math.min(Math.abs(clampedDx) / drag.rect.width, 1);
+      selectedPlace.animate(
+        [
+          { transform: `translateX(${enterX}px) scale(${0.88 + 0.12 * progress})`, opacity: 0.8 },
+          { transform: "translateX(0) scale(1)", opacity: 1 },
+        ],
+        { ...timing, fill: "backwards" }
+      );
+    } else {
+      // Snap back with a springy ease
+      const snapTiming = { duration: 320, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", fill: "none" };
+      const progress = Math.min(Math.abs(clampedDx) / drag.rect.width, 1);
+
+      selectedPlace.animate(
+        [
+          { transform: `translateX(${clampedDx}px)` },
+          { transform: "translateX(0)" },
+        ],
+        snapTiming
+      ).addEventListener("finish", () => { selectedPlace.style.transform = ""; });
+
+      drag.peekCard.animate(
+        [
+          { transform: `translateX(${clampedDx}px) scale(${0.88 + 0.12 * progress})` },
+          { transform: "translateX(0) scale(0.88)" },
+        ],
+        snapTiming
+      ).addEventListener("finish", () => drag.peekCard.remove());
     }
   }, { passive: true });
 }
