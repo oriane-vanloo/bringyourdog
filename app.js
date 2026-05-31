@@ -1123,16 +1123,18 @@ function renderSelectedPlace(place) {
 function restoreSelectedPlacePosition() {
   selectedPlaceDefaultParent.insertBefore(selectedPlace, selectedPlaceDefaultNextSibling);
   placeList.querySelectorAll(".selected-place-inline").forEach((slot) => slot.remove());
+  placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
 }
 
 function positionSelectedPlace(selectedPlaceInView) {
   if (mobileMapQuery.matches && isMapExpanded) {
     placeList.querySelectorAll(".selected-place-inline").forEach((slot) => slot.remove());
+    placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
     mapPanel.append(selectedPlace);
     return;
   }
 
-  if (!mobileMapQuery.matches || !selectedPlaceInView) {
+  if (!selectedPlaceInView) {
     restoreSelectedPlacePosition();
     return;
   }
@@ -1143,14 +1145,10 @@ function positionSelectedPlace(selectedPlaceInView) {
     return;
   }
 
-  let inlineSlot = placeList.querySelector(".selected-place-inline");
-  if (!inlineSlot) {
-    inlineSlot = document.createElement("li");
-    inlineSlot.className = "selected-place-inline";
-  }
-
-  selectedCard.after(inlineSlot);
-  inlineSlot.append(selectedPlace);
+  placeList.querySelectorAll(".selected-place-inline").forEach((slot) => slot.remove());
+  placeList.querySelectorAll(".place-card.is-detail").forEach((card) => card.classList.remove("is-detail"));
+  selectedCard.classList.add("is-detail");
+  selectedCard.append(selectedPlace);
 }
 
 function markerClusterDistance(a, b) {
@@ -1582,8 +1580,8 @@ function syncSelectedPlacePanel() {
     renderSelectedPlace(selectedPlaceInView || fallbackPlace);
     positionSelectedPlace(selectedPlaceInView);
   } else {
-    restoreSelectedPlacePosition();
-    renderSelectedPlace(null);
+    renderSelectedPlace(selectedPlaceInView);
+    positionSelectedPlace(selectedPlaceInView);
   }
 }
 
@@ -1759,7 +1757,7 @@ function renderSearchSuggestions() {
     return `
       <button class="search-suggestion-item" type="button" data-query="${escapeHtml(item.query)}" role="option">
         <span class="search-suggestion-query">${highlightSuggestionMatch(item.query, isTypedSearch ? searchValue : "")}</span>
-        <span class="search-suggestion-count">${escapeHtml(formatSuggestionCount(item))}</span>
+        ${item.placeCount > 1 ? `<span class="search-suggestion-count">${escapeHtml(formatSuggestionCount(item))}</span>` : ""}
       </button>
     `;
   }).join("");
@@ -2468,6 +2466,40 @@ function setupMapInteractionGuards() {
   mapElement.addEventListener("pointerdown", cancelPendingMapAutoposition, { passive: true });
   mapElement.addEventListener("touchstart", cancelPendingMapAutoposition, { passive: true });
   mapElement.addEventListener("wheel", cancelPendingMapAutoposition, { passive: true });
+
+  let swipeTouchStartX = null;
+
+  selectedPlace.addEventListener("touchstart", (event) => {
+    swipeTouchStartX = event.touches[0].clientX;
+  }, { passive: true });
+
+  selectedPlace.addEventListener("touchend", (event) => {
+    if (swipeTouchStartX === null || !isMapExpanded || !mobileMapQuery.matches) {
+      swipeTouchStartX = null;
+      return;
+    }
+
+    const deltaX = event.changedTouches[0].clientX - swipeTouchStartX;
+    swipeTouchStartX = null;
+
+    if (Math.abs(deltaX) < 50) {
+      return;
+    }
+
+    const filteredPlaces = getFilteredPlaces({ includeMapBounds: false });
+    const currentIndex = filteredPlaces.findIndex((p) => p.id === selectedPlaceId);
+    if (currentIndex < 0) {
+      return;
+    }
+
+    const nextIndex = deltaX < 0
+      ? Math.min(currentIndex + 1, filteredPlaces.length - 1)
+      : Math.max(currentIndex - 1, 0);
+
+    if (nextIndex !== currentIndex) {
+      selectPlace(filteredPlaces[nextIndex], { openPopup: false, pan: true, source: "swipe" });
+    }
+  }, { passive: true });
 }
 
 function flagLocateButtonError() {
@@ -2539,6 +2571,11 @@ function setupLocationControl() {
   }
 
   mapLocateToggle.addEventListener("click", () => {
+    if (mobileMapQuery.matches && !isMapExpanded) {
+      isMapExpanded = true;
+      updateMobileMapState({ fitBounds: false });
+    }
+
     setLocateButtonLoading(true);
     mapLocateToggle.classList.remove("is-error");
     trackEvent("map_locate_click", {
