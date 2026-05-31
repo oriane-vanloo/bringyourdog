@@ -1130,12 +1130,101 @@ function showSwipeHint() {
   const HINT_KEY = "bydog_swipe_hint";
   if (localStorage.getItem(HINT_KEY)) return;
   localStorage.setItem(HINT_KEY, "1");
+
   window.setTimeout(() => {
-    selectedPlace.classList.add("swipe-hint-active");
-    selectedPlace.addEventListener("animationend", () => {
-      selectedPlace.classList.remove("swipe-hint-active");
-    }, { once: true });
-  }, 1500);
+    // Need a next place to peek at
+    const filteredPlaces = getFilteredPlaces({ includeMapBounds: false })
+      .slice()
+      .sort((a, b) => b.lat - a.lat || a.lng - b.lng);
+    const currentIndex = filteredPlaces.findIndex((p) => p.id === selectedPlaceId);
+    if (currentIndex < 0 || currentIndex >= filteredPlaces.length - 1) return;
+    const nextPlace = filteredPlaces[currentIndex + 1];
+
+    // Measure the live card position
+    const rect = selectedPlace.getBoundingClientRect();
+    const PEEK = 52; // px of next card to reveal
+    const slideAmount = rect.width + 12 - PEEK;
+
+    // Build a lightweight peek card positioned just off the right edge
+    const peek = document.createElement("div");
+    peek.className = "swipe-hint-peek";
+    peek.style.cssText = [
+      `position:fixed`,
+      `z-index:1900`,
+      `left:${rect.right + 12}px`,
+      `bottom:${window.innerHeight - rect.bottom}px`,
+      `width:${rect.width}px`,
+      `min-height:${rect.height}px`,
+    ].join(";");
+    peek.innerHTML = `
+      <div class="selected-tags">
+        <span class="tag ${categoryClass(nextPlace.category)}">${escapeHtml(nextPlace.category)}</span>
+      </div>
+      <h2>${escapeHtml(nextPlace.name)}</h2>
+    `;
+    document.body.append(peek);
+
+    // Animate both cards with the same keyframes
+    const keyframes = [
+      { transform: "translateX(0)",              offset: 0    },
+      { transform: `translateX(-${slideAmount}px)`, offset: 0.38 },
+      { transform: `translateX(-${slideAmount}px)`, offset: 0.62 },
+      { transform: "translateX(0)",              offset: 1    },
+    ];
+    const timing = { duration: 820, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "none" };
+
+    selectedPlace.animate(keyframes, timing);
+    const peekAnim = peek.animate(keyframes, timing);
+    peekAnim.addEventListener("finish", () => peek.remove());
+  }, 1200);
+}
+
+function animateCardSwipe(direction, doSelect) {
+  const rect = selectedPlace.getBoundingClientRect();
+
+  // Snapshot the current card as an outgoing overlay
+  const outgoing = selectedPlace.cloneNode(true);
+  const os = outgoing.style;
+  os.setProperty("position", "fixed", "important");
+  os.setProperty("left", `${rect.left}px`, "important");
+  os.setProperty("top", `${rect.top}px`, "important");
+  os.setProperty("right", "auto", "important");
+  os.setProperty("bottom", "auto", "important");
+  os.setProperty("width", `${rect.width}px`, "important");
+  os.setProperty("min-height", "0", "important");
+  os.setProperty("max-height", `${rect.height}px`, "important");
+  os.setProperty("overflow", "hidden", "important");
+  os.setProperty("pointer-events", "none", "important");
+  os.setProperty("margin", "0", "important");
+  os.setProperty("z-index", "1899", "important");
+  document.body.append(outgoing);
+
+  const gap = 20;
+  const exitX = direction === "left" ? -(rect.width + gap) : rect.width + gap;
+  const enterX = direction === "left" ? rect.width + gap : -(rect.width + gap);
+
+  const timing = { duration: 360, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "none" };
+
+  // Slide old card out (shrinks as it goes)
+  outgoing.animate(
+    [
+      { transform: "translateX(0) scale(1)", opacity: 1 },
+      { transform: `translateX(${exitX}px) scale(0.88)`, opacity: 0 },
+    ],
+    timing
+  ).addEventListener("finish", () => outgoing.remove());
+
+  // Update card content synchronously
+  doSelect();
+
+  // Slide new card in from the opposite side (grows as it arrives)
+  selectedPlace.animate(
+    [
+      { transform: `translateX(${enterX}px) scale(0.88)`, opacity: 0 },
+      { transform: "translateX(0) scale(1)", opacity: 1 },
+    ],
+    { ...timing, fill: "backwards" }
+  );
 }
 
 function positionSelectedPlace(selectedPlaceInView) {
@@ -2512,7 +2601,10 @@ function setupMapInteractionGuards() {
       : Math.max(currentIndex - 1, 0);
 
     if (nextIndex !== currentIndex) {
-      selectPlace(filteredPlaces[nextIndex], { openPopup: false, pan: true, source: "swipe" });
+      const swipeDirection = deltaX < 0 ? "left" : "right";
+      animateCardSwipe(swipeDirection, () => {
+        selectPlace(filteredPlaces[nextIndex], { openPopup: false, pan: true, source: "swipe" });
+      });
     }
   }, { passive: true });
 }
