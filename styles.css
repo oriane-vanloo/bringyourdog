@@ -265,6 +265,12 @@ input:focus-visible {
 
 .category-marker {
   display: block;
+  filter: drop-shadow(0 4px 8px rgba(90, 60, 15, 0.32));
+  transition: filter 150ms ease;
+}
+
+.category-marker:hover {
+  filter: drop-shadow(0 2px 4px rgba(90, 60, 15, 0.16));
 }
 
 .marker-cluster-pill {
@@ -273,12 +279,10 @@ input:focus-visible {
   border: 1px solid rgba(226, 232, 240, 0.92);
   border-radius: 999px;
   color: #1E293B;
-  background: transparent;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.95);
   box-shadow:
     inset 0 0 0 1px rgba(100, 116, 139, 0.22),
-    0 8px 18px rgba(30, 41, 59, 0.10);
+    0 8px 22px 2px rgba(30, 41, 59, 0.13);
   font-size: 13px;
   font-weight: 500;
   line-height: 1;
