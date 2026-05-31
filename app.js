@@ -4,7 +4,7 @@ const SEARCH_EVENT_TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_SEARCH_SUGGESTIONS = 3;
 const MAX_TYPED_SEARCH_SUGGESTIONS = 6;
 const SEARCH_ANALYTICS_DEBOUNCE_MS = 900;
-const MARKER_CLUSTER_RADIUS_PX = 42;
+const MARKER_CLUSTER_RADIUS_PX = 28;
 const MARKER_CLUSTER_MAX_ZOOM = 17;
 
 const categoryMeta = {
@@ -58,6 +58,7 @@ const suburbs = [
   "Fairfield",
   "Fitzroy North",
   "Fitzroy",
+  "Hawthorn",
   "Kensington",
   "Melbourne",
   "North Melbourne",
@@ -456,6 +457,19 @@ function getExactSearchSuburb(query) {
   }
 
   return suburbs.find((suburb) => suburb.toLowerCase() === targetSuburb) || "";
+}
+
+function getExactSearchPlace(query) {
+  const targetPlace = cleanSearchQuery(query).toLowerCase();
+
+  if (!targetPlace) {
+    return null;
+  }
+
+  return places.find((place) => place.name.toLowerCase() === targetPlace)
+    || places.find((place) => Array.isArray(place.aliases)
+      && place.aliases.some((alias) => alias.toLowerCase() === targetPlace))
+    || null;
 }
 
 function shouldFitSearchQuery(query) {
@@ -1238,7 +1252,7 @@ function renderMarkers(filteredPlaces) {
   currentMarkerPlaces = [...filteredPlaces];
 
   createMarkerClusters(filteredPlaces).forEach((cluster) => {
-    if (cluster.places.length > 1 && map.getZoom() <= MARKER_CLUSTER_MAX_ZOOM) {
+    if (cluster.places.length > 4 && map.getZoom() <= MARKER_CLUSTER_MAX_ZOOM) {
       addClusterMarker(cluster);
       return;
     }
@@ -1409,8 +1423,61 @@ function updateFilterButtons() {
   updateFilterBadge(expandedFilterToggle, expandedFilterBadge, appliedFilterCount);
 }
 
-function fitFilteredBounds(filteredPlaces) {
+function getSuburbMapCenter(suburb) {
+  const targetSuburb = cleanSearchQuery(suburb).toLowerCase();
+
+  if (!targetSuburb) {
+    return null;
+  }
+
+  const suburbPlaces = places.filter((place) => {
+    return getLocationParts(place.address).suburb.toLowerCase() === targetSuburb;
+  });
+
+  if (suburbPlaces.length === 0) {
+    return null;
+  }
+
+  const totals = suburbPlaces.reduce((sum, place) => ({
+    lat: sum.lat + place.lat,
+    lng: sum.lng + place.lng,
+  }), { lat: 0, lng: 0 });
+
+  return [
+    totals.lat / suburbPlaces.length,
+    totals.lng / suburbPlaces.length,
+  ];
+}
+
+function fitSearchSuburbFallback(query) {
+  const searchSuburb = getExactSearchSuburb(query);
+  const suburbCenter = getSuburbMapCenter(searchSuburb);
+
+  if (!suburbCenter) {
+    return false;
+  }
+
+  map.setView(suburbCenter, 15, { animate: true });
+  return true;
+}
+
+function focusSearchPlace(query) {
+  const place = getExactSearchPlace(query);
+
+  if (!place) {
+    return false;
+  }
+
+  map.setView([place.lat, place.lng], 17, { animate: true });
+  return true;
+}
+
+function fitFilteredBounds(filteredPlaces, query = searchInput.value) {
   if (filteredPlaces.length === 0) {
+    if (fitSearchSuburbFallback(query)) {
+      return;
+    }
+
     map.setView(MELBOURNE_CENTER, 12);
     return;
   }
@@ -1465,7 +1532,7 @@ function refreshMapLayout({ fitBounds = false, focusSelectedPlace = false } = {}
 
     if (shouldFitBoundsOnRefresh) {
       shouldFitBoundsOnRefresh = false;
-      fitFilteredBounds(getFilteredPlaces({ includeMapBounds: false }));
+      fitFilteredBounds(getFilteredPlaces({ includeMapBounds: false }), searchInput.value);
       window.requestAnimationFrame(() => map.invalidateSize({ pan: false }));
     }
   });
@@ -1718,6 +1785,7 @@ function applySearchSuggestion(query) {
   updateSearchClearButtons();
   hideSearchSuggestions();
   render({ fitBounds: shouldFitSearchQuery(query) });
+  focusSearchPlace(query);
   trackEvent("search_suggestion_click", {
     search_term: query,
     suggestion_type: isTypedSearch ? "typed" : "recent",
