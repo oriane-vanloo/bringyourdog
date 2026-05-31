@@ -70,6 +70,18 @@ body::before {
   }
 }
 
+@keyframes swipe-hint {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-65px); }
+  55%  { transform: translateX(-65px); }
+  80%  { transform: translateX(0); }
+  100% { transform: translateX(0); }
+}
+
+.swipe-hint-active {
+  animation: swipe-hint 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @keyframes photo-skeleton {
   0% {
     background-position: 220% 0, 0 0;
@@ -964,21 +976,6 @@ h1 {
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 10px;
-}
-
-.sheet-feature-filters .feature-filter-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 14px 0 0;
-  border: 1px solid rgba(226, 232, 240, 0.92);
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.feature-filter-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--foreground);
 }
 
 .filter-button {
