@@ -15,6 +15,7 @@
   --interactive: #FF9BAB;
   --button: #FE9BAB;
   --button-hover: #D17C89;
+  --focus: #8C566F;
   --muted: #64748B;
   --shadow-soft: 0 10px 15px -3px rgba(30, 41, 59, 0.04);
   --shadow-large: 0 25px 50px -12px rgba(30, 41, 59, 0.10);
@@ -79,6 +80,23 @@ body::before {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto !important;
+    scroll-snap-type: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 button,
 input {
   font: inherit;
@@ -106,7 +124,7 @@ input {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -247,6 +265,28 @@ input:focus-visible {
 
 .category-marker {
   display: block;
+}
+
+.marker-cluster-pill {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 999px;
+  color: #1E293B;
+  background: transparent;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow:
+    inset 0 0 0 1px rgba(100, 116, 139, 0.22),
+    0 8px 18px rgba(30, 41, 59, 0.10);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.marker-cluster-pill span {
+  display: block;
+  transform: translateY(-0.5px);
 }
 
 .sidebar {
@@ -699,7 +739,7 @@ h1 {
 }
 
 .desktop-zoom-button:focus-visible {
-  outline: 2px solid var(--button);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -745,7 +785,7 @@ h1 {
 }
 
 .map-locate-toggle:focus-visible {
-  outline: 2px solid var(--button);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -961,7 +1001,7 @@ h1 {
 }
 
 .feature-filter-button:focus-visible {
-  outline: 2px solid var(--button);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -1987,6 +2027,22 @@ h1 {
   letter-spacing: 0.04em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.guide-nav-link {
+  position: relative;
+  padding-bottom: 6px;
+}
+
+.guide-nav-link.is-active::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--button);
+  content: "";
 }
 
 .guide-nav-link:hover,

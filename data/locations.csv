@@ -2,6 +2,7 @@ Name,Address,Category,Description,Latitude,Longitude,GeocodeSource
 7 Grams Cafe,505 Church St Richmond VIC 3121,Cafe,Leashed dogs welcome at street seating.,-37.8286067,144.9976255,nominatim
 Abbots Yard,329 Victoria St Abbotsford VIC 3067,Pub/Bar,Dog-friendly outdoor beer garden and communal dining area.,-37.8098774,144.9963564,nominatim
 Alimentari Fitzroy Delicatessen,251 Brunswick St Fitzroy VIC 3065,Cafe,Dogs welcome at outdoor pavement tables.,-37.7997308,144.9780654,nominatim
+All Nations Hotel,64 Lennox St Richmond VIC 3121,Pub/Bar,Dogs welcome in the outdoor beer garden area.,-37.8132757,144.9952744,facebook+nominatim
 All Are Welcome,190 High St Northcote VIC 3070,Cafe,Dogs welcome in outdoor undercover seating.,-37.7747727,144.9980519,nominatim
 Arbory Bar & Eatery,1 Flinders Walk Melbourne VIC 3000,Pub/Bar,Dogs welcome in heated undercover courtyard.,-37.8188647,144.9677115,nominatim
 Arcadia Cafe,193 Gertrude St Fitzroy VIC 3065,Cafe,Covered outdoor area with dog bowls.,-37.8059489,144.9810576,nominatim
@@ -106,6 +107,7 @@ Riverland Bar,Federation Wharf Vaults 1-9 Melbourne VIC 3000,Pub/Bar,Dogs welcom
 Rochester Hotel,202 Johnston St Fitzroy VIC 3065,Pub/Bar,Dogs welcome in indoor and outdoor areas with water bowls.,-37.7988193,144.9816836,nominatim
 Royal Saxon,545 Church St Richmond VIC 3121,Pub/Bar,Leashed dogs welcome in heated undercover courtyard.,-37.8297837,144.9974954,nominatim
 Rushall Reserve,267 Holden St Fitzroy North VIC 3068,Park,Dogs may be exercised off-leash outside wetland and Merri Creek bank areas.,-37.7802439,144.9906055,nominatim
+Small Patch Wine Store & Bar,707 Glenferrie Rd Hawthorn VIC 3122,Pub/Bar,Dogs welcome inside and in the courtyard.,-37.8194957,145.0357594,facebook+official+nominatim
 Smith Reserve,Smith Reserve Cecil Street Fitzroy VIC 3065,Park,Dog off-leash area with drinking fountain and playground restrictions.,-37.7945291,144.9819942,manual
 SOS Cafe,Unit 5 177 Toorak Rd South Yarra VIC 3141,Cafe,Dogs welcome in courtyard and street seating.,-37.8389602,144.993147,manual
 South of Johnston,46 Oxford St Collingwood VIC 3066,Cafe,Dogs welcome in outdoor seating and a dog-friendly indoor area.,-37.8060035,144.9846903,facebook+nominatim
@@ -142,7 +144,7 @@ The Rose Hotel,406 Napier St Fitzroy VIC 3065,Pub/Bar,Dog-friendly Fitzroy pub w
 The Shady Lady,36 Johnston St Fitzroy VIC 3065,Pub/Bar,Dogs welcome in indoor and beer garden areas until 10pm.,-37.7982507,144.9760194,nominatim
 The Standard Hotel,293 Fitzroy St Fitzroy VIC 3065,Pub/Bar,Dog-friendly beer garden.,-37.8007515,144.9768301,nominatim
 The Swan Hotel,425 Church St Richmond VIC 3121,Pub/Bar,Dog-friendly pub with beer garden and water bowls.,-37.8341639,144.9966058,nominatim
-The Terminus Hotel,605 Victoria St Abbotsford VIC 3067,Pub/Bar,Dogs welcome in leafy beer garden with water bowls.,-37.8109749,145.0072652,nominatim
+The Terminus Hotel,605 Victoria St Abbotsford VIC 3067,Pub/Bar,Super dog-friendly pub with beer garden and dog menu.,-37.8109749,145.0072652,facebook+nominatim
 The Tipsy Cow Malt and Wine,361 Bay St Port Melbourne VIC 3207,Pub/Bar,Dogs welcome indoors and in dog-friendly courtyard.,-37.83525,144.945172,nominatim
 The Tramway Hotel,165 Rae St Fitzroy North VIC 3068,Pub/Bar,Dogs welcome in the small courtyard.,-37.7885137,144.9789774,facebook+nominatim
 Uitgang Bar,406 Bridge Rd Richmond VIC 3121,Pub/Bar,Dogs welcome inside courtyard and street seating.,-37.8194622,145.0049634,nominatim
@@ -217,3 +219,5 @@ McDonnell Park,68 Clifton St Northcote VIC 3070,Park,Dogs can be off-lead in the
 Merri Park,2 Sumner Ave Northcote VIC 3070,Park,Dogs can be off-lead in the park.,-37.770437,144.9849827,darebin+nominatim
 Penders Park,48A Pender St Thornbury VIC 3071,Park,Dogs can be off-lead; toilets and walking paths are available.,-37.7546034,145.0073415,darebin+nominatim
 T W Blake Park,82 Gower St Preston VIC 3072,Park,Dogs allowed off-lead outside organised sporting hours.,-37.7415996,145.0250268,darebin+nominatim
+Northcote Uniting Op Shop,309-311 High St Northcote VIC 3070,Shop,Dogs welcome while browsing the op shop.,-37.771169,144.998442,facebook+google
+Sacred Heart Mission Op Shop - Northcote,387 High St Northcote VIC 3070,Shop,Dogs welcome while browsing the op shop.,-37.769143,144.998836,facebook+google+nominatim

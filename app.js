@@ -2,7 +2,10 @@ const MELBOURNE_CENTER = [-37.8108, 144.9631];
 const LOCAL_SEARCH_STORAGE_KEY = "bringYourDogSearches";
 const SEARCH_EVENT_TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_SEARCH_SUGGESTIONS = 3;
+const MAX_TYPED_SEARCH_SUGGESTIONS = 6;
 const SEARCH_ANALYTICS_DEBOUNCE_MS = 900;
+const MARKER_CLUSTER_RADIUS_PX = 42;
+const MARKER_CLUSTER_MAX_ZOOM = 17;
 
 const categoryMeta = {
   Cafe: {
@@ -79,6 +82,7 @@ const suburbs = [
 
 let map;
 let places = [];
+let currentMarkerPlaces = [];
 let selectedPlaceId = null;
 let activeSearchInput = null;
 
@@ -665,6 +669,44 @@ function getPopularSearchSuggestions(query) {
   ).slice(0, MAX_SEARCH_SUGGESTIONS);
 }
 
+function matchesTypedSuggestion(value, query) {
+  return String(value || "").toLowerCase().includes(query);
+}
+
+function sortTypedSuggestions(a, b, query) {
+  const aQuery = a.query.toLowerCase();
+  const bQuery = b.query.toLowerCase();
+  const aStartsWith = aQuery.startsWith(query);
+  const bStartsWith = bQuery.startsWith(query);
+
+  if (aStartsWith !== bStartsWith) {
+    return aStartsWith ? -1 : 1;
+  }
+
+  return aQuery.localeCompare(bQuery);
+}
+
+function getDirectoryPlaceSuggestions(query) {
+  const cleanedQuery = cleanSearchQuery(query).toLowerCase();
+
+  if (!cleanedQuery) {
+    return [];
+  }
+
+  return places
+    .filter((place) => {
+      const aliases = Array.isArray(place.aliases) ? place.aliases : [];
+      return [place.name, ...aliases].some((value) => matchesTypedSuggestion(value, cleanedQuery));
+    })
+    .map((place) => ({
+      query: place.name,
+      count: 1,
+      metric: "places",
+      placeCount: 1,
+    }))
+    .sort((a, b) => sortTypedSuggestions(a, b, cleanedQuery));
+}
+
 function getTypedSearchSuggestions(query) {
   const cleanedQuery = cleanSearchQuery(query).toLowerCase();
 
@@ -672,11 +714,17 @@ function getTypedSearchSuggestions(query) {
     return [];
   }
 
-  return getPlaceCountSuggestions()
+  const suburbSuggestions = getPlaceCountSuggestions()
     .filter((item) => item.query.toLowerCase().includes(cleanedQuery))
     .map(hydrateSuggestionItem)
     .filter(Boolean)
-    .slice(0, MAX_SEARCH_SUGGESTIONS);
+    .sort((a, b) => sortTypedSuggestions(a, b, cleanedQuery));
+  const placeSuggestions = getDirectoryPlaceSuggestions(cleanedQuery);
+
+  return uniqueSuggestionsByQuery([
+    ...suburbSuggestions,
+    ...placeSuggestions,
+  ]).slice(0, MAX_TYPED_SEARCH_SUGGESTIONS);
 }
 
 function getLocationParts(address) {
@@ -1091,13 +1139,119 @@ function positionSelectedPlace(selectedPlaceInView) {
   inlineSlot.append(selectedPlace);
 }
 
+function markerClusterDistance(a, b) {
+  return Math.hypot(a.point.x - b.point.x, a.point.y - b.point.y);
+}
+
+function createMarkerClusters(filteredPlaces) {
+  const points = filteredPlaces.map((place) => ({
+    place,
+    point: map.latLngToLayerPoint([place.lat, place.lng]),
+  }));
+  const clusters = [];
+
+  points.forEach((item) => {
+    if (item.place.id === selectedPlaceId) {
+      clusters.push({
+        places: [item.place],
+        points: [item.point],
+      });
+      return;
+    }
+
+    const cluster = clusters.find((candidate) => {
+      return candidate.places.length > 0
+        && !candidate.places.some((place) => place.id === selectedPlaceId)
+        && markerClusterDistance(item, candidate.center) <= MARKER_CLUSTER_RADIUS_PX;
+    });
+
+    if (cluster) {
+      cluster.places.push(item.place);
+      cluster.points.push(item.point);
+      cluster.center = {
+        point: L.point(
+          cluster.points.reduce((sum, point) => sum + point.x, 0) / cluster.points.length,
+          cluster.points.reduce((sum, point) => sum + point.y, 0) / cluster.points.length
+        ),
+      };
+    } else {
+      clusters.push({
+        places: [item.place],
+        points: [item.point],
+        center: item,
+      });
+    }
+  });
+
+  return clusters;
+}
+
+function addClusterMarker(cluster) {
+  const latLngs = cluster.places.map((place) => [place.lat, place.lng]);
+  const center = L.latLngBounds(latLngs).getCenter();
+  const count = cluster.places.length;
+  const marker = L.marker(center, {
+    icon: L.divIcon({
+      className: "marker-cluster-pill",
+      html: `<span>${count}</span>`,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
+    }),
+    keyboard: true,
+    alt: `${count} dog-friendly places`,
+  });
+
+  marker.on("click", () => {
+    const bounds = L.latLngBounds(latLngs);
+    const currentZoom = map.getZoom();
+
+    if (currentZoom >= MARKER_CLUSTER_MAX_ZOOM) {
+      map.zoomIn(1);
+      return;
+    }
+
+    map.fitBounds(bounds.pad(0.35), {
+      animate: true,
+      maxZoom: MARKER_CLUSTER_MAX_ZOOM,
+    });
+  });
+
+  marker.on("keypress", (event) => {
+    if (event.originalEvent?.key !== "Enter" && event.originalEvent?.key !== " ") {
+      return;
+    }
+
+    event.originalEvent.preventDefault();
+    marker.fire("click");
+  });
+
+  markerLayer.addLayer(marker);
+  const markerElement = marker.getElement();
+  if (markerElement) {
+    markerElement.setAttribute("role", "button");
+    markerElement.setAttribute("aria-label", `Zoom to ${count} dog-friendly places`);
+  }
+}
+
 function renderMarkers(filteredPlaces) {
   markerLayer.clearLayers();
+  currentMarkerPlaces = [...filteredPlaces];
 
-  filteredPlaces.forEach((place) => {
+  createMarkerClusters(filteredPlaces).forEach((cluster) => {
+    if (cluster.places.length > 1 && map.getZoom() <= MARKER_CLUSTER_MAX_ZOOM) {
+      addClusterMarker(cluster);
+      return;
+    }
+
+    const place = cluster.places[0];
     const marker = markersByPlace.get(place.id);
     if (marker) {
       markerLayer.addLayer(marker);
+      const markerElement = marker.getElement();
+      if (markerElement) {
+        markerElement.setAttribute("role", "button");
+        markerElement.setAttribute("aria-label", `Open details for ${place.name}`);
+      }
     }
   });
 }
@@ -1128,6 +1282,7 @@ function renderList(filteredPlaces) {
 
     const button = document.createElement("button");
     button.type = "button";
+    button.setAttribute("aria-label", `Open details for ${place.name}`);
     button.innerHTML = `
       <img class="place-icon" src="${meta.icon}" alt="">
       <span class="place-content">
@@ -1233,14 +1388,19 @@ function updateFilterButtons() {
 
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
+    if (category && category !== "all") {
+      button.setAttribute("aria-label", `${isActive ? "Hide" : "Show"} ${category === "Pub/Bar" ? "pub and bar" : category.toLowerCase()} places`);
+    }
   });
 
   featureFilterButtons.forEach((button) => {
     const feature = button.dataset.featureFilter;
     const isActive = activeFeatureFilters.has(feature);
+    const label = featureFilterMeta[feature]?.label || button.getAttribute("aria-label") || "Feature filter";
 
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
+    button.setAttribute("aria-label", `${isActive ? "Turn off" : "Turn on"} ${label} filter`);
   });
 
   const appliedFilterCount = (activeCategories.size === categoryCount ? 0 : activeCategories.size)
@@ -2175,6 +2335,11 @@ function setupMobileMapToggle() {
     if (isMapExpanded) {
       isMapExpanded = false;
       updateMobileMapState({ fitBounds: true });
+      return;
+    }
+
+    if (selectedPlaceId) {
+      clearSelectedPlace();
     }
   });
 
@@ -2211,7 +2376,10 @@ function setupDesktopZoomControls() {
     });
   });
 
-  map.on("zoomend", updateDesktopZoomControls);
+  map.on("zoomend", () => {
+    renderMarkers(currentMarkerPlaces);
+    updateDesktopZoomControls();
+  });
   updateDesktopZoomControls();
 }
 
@@ -2362,10 +2530,21 @@ function setupMarkers() {
     const marker = L.marker([place.lat, place.lng], {
       icon: iconByCategory[place.category],
       title: place.name,
+      alt: `${place.name} map marker`,
+      keyboard: true,
       riseOnHover: true,
     }).bindPopup(popupHtml(place));
 
     marker.on("click", () => {
+      selectPlace(place, { openPopup: !shouldUseBottomSheet(), source: "map_marker" });
+    });
+    marker.on("keypress", (event) => {
+      const key = event.originalEvent?.key;
+      if (key !== "Enter" && key !== " ") {
+        return;
+      }
+
+      event.originalEvent.preventDefault();
       selectPlace(place, { openPopup: !shouldUseBottomSheet(), source: "map_marker" });
     });
 
@@ -2394,9 +2573,12 @@ async function loadPlaces() {
 async function init() {
   map = L.map("map", {
     fadeAnimation: false,
+    keyboard: true,
     zoomControl: false,
     preferCanvas: true,
   }).setView(MELBOURNE_CENTER, 12);
+  mapElement.setAttribute("role", "region");
+  mapElement.setAttribute("aria-label", "Interactive map of dog-friendly places in Melbourne");
   map.attributionControl.setPrefix(false);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {

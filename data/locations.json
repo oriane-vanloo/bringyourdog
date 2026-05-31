@@ -28,6 +28,15 @@
     "geocodeSource": "nominatim"
   },
   {
+    "name": "All Nations Hotel",
+    "address": "64 Lennox St Richmond VIC 3121",
+    "category": "Pub/Bar",
+    "description": "Dogs welcome in the outdoor beer garden area.",
+    "lat": -37.8132757,
+    "lng": 144.9952744,
+    "geocodeSource": "facebook+nominatim"
+  },
+  {
     "name": "All Are Welcome",
     "address": "190 High St Northcote VIC 3070",
     "category": "Cafe",
@@ -1006,6 +1015,16 @@
     "geocodeSource": "nominatim"
   },
   {
+    "name": "Small Patch Wine Store & Bar",
+    "address": "707 Glenferrie Rd Hawthorn VIC 3122",
+    "category": "Pub/Bar",
+    "description": "Dogs welcome inside and in the courtyard.",
+    "lat": -37.8194957,
+    "lng": 145.0357594,
+    "geocodeSource": "facebook+official+nominatim",
+    "instagramUrl": "https://www.instagram.com/smallpatchwines/"
+  },
+  {
     "name": "Smith Reserve",
     "address": "Smith Reserve Cecil Street Fitzroy VIC 3065",
     "category": "Park",
@@ -1341,10 +1360,10 @@
     "name": "The Terminus Hotel",
     "address": "605 Victoria St Abbotsford VIC 3067",
     "category": "Pub/Bar",
-    "description": "Dogs welcome in leafy beer garden with water bowls.",
+    "description": "Super dog-friendly pub with beer garden and dog menu.",
     "lat": -37.8109749,
     "lng": 145.0072652,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "facebook+nominatim"
   },
   {
     "name": "The Tipsy Cow Malt and Wine",
@@ -2081,5 +2100,23 @@
     "geocodeSource": "darebin+nominatim",
     "lat": -37.7415996,
     "lng": 145.0250268
+  },
+  {
+    "name": "Northcote Uniting Op Shop",
+    "address": "309-311 High St Northcote VIC 3070",
+    "category": "Shop",
+    "description": "Dogs welcome while browsing the op shop.",
+    "lat": -37.771169,
+    "lng": 144.998442,
+    "geocodeSource": "facebook+google"
+  },
+  {
+    "name": "Sacred Heart Mission Op Shop - Northcote",
+    "address": "387 High St Northcote VIC 3070",
+    "category": "Shop",
+    "description": "Dogs welcome while browsing the op shop.",
+    "lat": -37.769143,
+    "lng": 144.998836,
+    "geocodeSource": "facebook+google+nominatim"
   }
 ]
