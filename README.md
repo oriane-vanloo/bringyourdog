@@ -1,6 +1,6 @@
 # Bring Your Dog
 
-Static Leaflet map for the dog-friendly venue dataset.
+Dog-friendly venues in Melbourne, Australia.
 
 Live site: https://oriane-vanloo.github.io/bringyourdog/
 
