@@ -1111,6 +1111,33 @@ h1 {
   transform: translateX(var(--feature-toggle-knob-shift));
 }
 
+.filter-toast {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  left: 50%;
+  z-index: 2000;
+  transform: translate(-50%, 6px);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--foreground);
+  background: #FFFFFF;
+  box-shadow: 0 12px 30px -18px rgba(30, 41, 59, 0.45);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.filter-toast.filter-toast-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .desktop-feature-filters .feature-filter-button[data-tooltip] {
     position: relative;

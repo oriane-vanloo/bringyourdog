@@ -61,6 +61,7 @@ const suburbs = [
   "Fitzroy North",
   "Fitzroy",
   "Hawthorn",
+  "Keilor East",
   "Kensington",
   "Melbourne",
   "North Melbourne",

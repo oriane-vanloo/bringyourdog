@@ -1,4 +1,4 @@
-Name,Address,Category,Description,Latitude,Longitude,GeocodeSource
+Name,Address,Category,Description,Latitude,Longitude,Geocode Source
 7 Grams Cafe,505 Church St Richmond VIC 3121,Cafe,Leashed dogs welcome at street seating.,-37.8286067,144.9976255,nominatim
 Abbots Yard,329 Victoria St Abbotsford VIC 3067,Pub/Bar,Dog-friendly outdoor beer garden and communal dining area.,-37.8098774,144.9963564,nominatim
 Alimentari Fitzroy Delicatessen,251 Brunswick St Fitzroy VIC 3065,Cafe,Dogs welcome at outdoor pavement tables.,-37.7997308,144.9780654,nominatim
@@ -221,3 +221,11 @@ Penders Park,48A Pender St Thornbury VIC 3071,Park,Dogs can be off-lead; toilets
 T W Blake Park,82 Gower St Preston VIC 3072,Park,Dogs allowed off-lead outside organised sporting hours.,-37.7415996,145.0250268,darebin+nominatim
 Northcote Uniting Op Shop,309-311 High St Northcote VIC 3070,Shop,Dogs welcome while browsing the op shop.,-37.771169,144.998442,facebook+google
 Sacred Heart Mission Op Shop - Northcote,387 High St Northcote VIC 3070,Shop,Dogs welcome while browsing the op shop.,-37.769143,144.998836,facebook+google+nominatim
+Brimbank Park,"Keilor Park Dr, Keilor East VIC 3033",Park,"Dog-friendly park with long walking trails, native wildlife and valley views.",-37.7359,144.8401,user
+Lumbar & Co,"Brimbank Park, Keilor Park Dr, Keilor East VIC 3033",Cafe,Dog-friendly cafe inside Brimbank Park.,-37.7354,144.84264,user
+The Bridge Hotel,"642 Bridge Rd, Richmond VIC 3121",Pub/Bar,Dogs welcome in the covered laneway with dog bowls available.,-37.82033,145.01296,facebook+official
+Amora Hotel Riverwalk Melbourne,"649 Bridge Rd, Richmond VIC 3121",Pub/Bar,Dogs welcome on the terrace overlooking the park.,-37.82036,145.0132,facebook+official
+Touchwood,"480 Bridge Rd, Richmond VIC 3121",Cafe,Dogs welcome in the rear courtyard.,-37.81973,145.00747,facebook+directory
+Cafe Azul,"346 Bridge Rd, Richmond VIC 3121",Cafe,Dogs welcome in the rear courtyard.,-37.81924,145.00293,facebook+directory
+On The Spot Dry Cleaners,"446 Bridge Rd, Richmond VIC 3121",Shop,Dogs welcome and treats available.,-37.81961,145.00632,facebook+directory
+Adairs Richmond Homemaker,"495 Bridge Rd, Richmond VIC 3121",Shop,Dogs welcome while browsing and treats available.,-37.81979,145.00798,facebook+official

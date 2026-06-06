@@ -2118,5 +2118,78 @@
     "lat": -37.769143,
     "lng": 144.998836,
     "geocodeSource": "facebook+google+nominatim"
+  },
+  {
+    "name": "Brimbank Park",
+    "address": "Keilor Park Dr, Keilor East VIC 3033",
+    "category": "Park",
+    "description": "Dog-friendly park with long walking trails, native wildlife and valley views.",
+    "lat": -37.7359,
+    "lng": 144.8401,
+    "geocodeSource": "user"
+  },
+  {
+    "name": "Lumbar & Co",
+    "address": "Brimbank Park, Keilor Park Dr, Keilor East VIC 3033",
+    "category": "Cafe",
+    "description": "Dog-friendly cafe inside Brimbank Park.",
+    "lat": -37.7354,
+    "lng": 144.84264,
+    "geocodeSource": "user"
+  },
+  {
+    "name": "The Bridge Hotel",
+    "address": "642 Bridge Rd, Richmond VIC 3121",
+    "category": "Pub/Bar",
+    "description": "Dogs welcome in the covered laneway with dog bowls available.",
+    "lat": -37.82033,
+    "lng": 145.01296,
+    "geocodeSource": "facebook+official",
+    "instagramUrl": "https://www.instagram.com/bridgehotel"
+  },
+  {
+    "name": "Amora Hotel Riverwalk Melbourne",
+    "address": "649 Bridge Rd, Richmond VIC 3121",
+    "category": "Pub/Bar",
+    "description": "Dogs welcome on the terrace overlooking the park.",
+    "lat": -37.82036,
+    "lng": 145.0132,
+    "geocodeSource": "facebook+official"
+  },
+  {
+    "name": "Touchwood",
+    "address": "480 Bridge Rd, Richmond VIC 3121",
+    "category": "Cafe",
+    "description": "Dogs welcome in the rear courtyard.",
+    "lat": -37.81973,
+    "lng": 145.00747,
+    "geocodeSource": "facebook+directory"
+  },
+  {
+    "name": "Cafe Azul",
+    "address": "346 Bridge Rd, Richmond VIC 3121",
+    "category": "Cafe",
+    "description": "Dogs welcome in the rear courtyard.",
+    "lat": -37.81924,
+    "lng": 145.00293,
+    "geocodeSource": "facebook+directory"
+  },
+  {
+    "name": "On The Spot Dry Cleaners",
+    "address": "446 Bridge Rd, Richmond VIC 3121",
+    "category": "Shop",
+    "description": "Dogs welcome and treats available.",
+    "lat": -37.81961,
+    "lng": 145.00632,
+    "geocodeSource": "facebook+directory"
+  },
+  {
+    "name": "Adairs Richmond Homemaker",
+    "address": "495 Bridge Rd, Richmond VIC 3121",
+    "category": "Shop",
+    "description": "Dogs welcome while browsing and treats available.",
+    "lat": -37.81979,
+    "lng": 145.00798,
+    "geocodeSource": "facebook+official"
   }
 ]
