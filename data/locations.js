@@ -62,7 +62,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Covered outdoor area with dog bowls.",
     "lat": -37.8059489,
     "lng": 144.9810576,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/arcadiaongertrude/"
   },
   {
     "name": "Artiga Specialty Coffee",
@@ -267,7 +268,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dog-friendly cafe with treats available at the counter.",
     "lat": -37.8364806,
     "lng": 144.9624621,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/parklanecoffee/"
   },
   {
     "name": "Cafe Piccante",
@@ -305,7 +307,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome in the courtyard with treats available.",
     "lat": -37.78803,
     "lng": 144.99141,
-    "geocodeSource": "manual"
+    "geocodeSource": "manual",
+    "instagramUrl": "https://www.instagram.com/cavallini_bakery/"
   },
   {
     "name": "Chris Gahan Reserve",
@@ -427,7 +430,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dog-focused cafe with dog menu and off-lead rear area.",
     "lat": -37.7998667,
     "lng": 144.9919632,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/doghousedogcafe_official/"
   },
   {
     "name": "Donny's",
@@ -561,7 +565,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome for coffee and dog treats stocked.",
     "lat": -37.7853874,
     "lng": 144.9804807,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/glory_us_"
   },
   {
     "name": "Goldy's Tavern",
@@ -580,7 +585,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome at outdoor seating and courtyard tables.",
     "lat": -37.7832356,
     "lng": 144.9821608,
-    "geocodeSource": "facebook+nominatim"
+    "geocodeSource": "facebook+nominatim",
+    "instagramUrl": "https://www.instagram.com/greensleevescoffeehouse/"
   },
   {
     "name": "Hachi Dog Boutique & Spa",
@@ -729,7 +735,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome at this Brunswick Street cake cafe.",
     "lat": -37.79928,
     "lng": 144.97815,
-    "geocodeSource": "facebook+manual"
+    "geocodeSource": "facebook+manual",
+    "instagramUrl": "https://www.instagram.com/explore/locations/346799/le-gourmet-cakes/"
   },
   {
     "name": "Leonard's House of Love",
@@ -797,7 +804,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome in undercover courtyard.",
     "lat": -37.8030269,
     "lng": 144.9970286,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/mavisthegrocer/"
   },
   {
     "name": "Milkwood",
@@ -871,7 +879,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs allowed outside with covered umbrella seating.",
     "lat": -37.8321207,
     "lng": 144.9592873,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/oconnells_hotel/"
   },
   {
     "name": "Oh Loretta",
@@ -979,7 +988,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome at covered outdoor seating.",
     "lat": -37.8053529,
     "lng": 144.9940919,
-    "geocodeSource": "facebook+nominatim"
+    "geocodeSource": "facebook+nominatim",
+    "instagramUrl": "https://www.instagram.com/raphsdeli"
   },
   {
     "name": "Republica",
@@ -997,7 +1007,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome in the outdoor seating area.",
     "lat": -37.7978448,
     "lng": 144.978284,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/ricepaperscissors_/?hl=en"
   },
   {
     "name": "Riverland Bar",
@@ -1099,7 +1110,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome in undercover courtyard.",
     "lat": -37.8216199,
     "lng": 145.0081509,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/stillman_cafe/"
   },
   {
     "name": "Stomping Ground Brewery & Beer Hall",
@@ -1242,7 +1254,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dog-friendly courtyard with water bowls and covered patio.",
     "lat": -37.8341251,
     "lng": 144.9713427,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/kettleblackcafe"
   },
   {
     "name": "The Keys",
@@ -1310,7 +1323,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs allowed in beer garden with water bowls and heaters.",
     "lat": -37.8340778,
     "lng": 144.9501509,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thepalacehotel/"
   },
   {
     "name": "The Park Hotel Abbotsford",
@@ -1517,7 +1531,8 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "description": "Dogs welcome in undercover beer garden with water bowls.",
     "lat": -37.7998417,
     "lng": 144.9930048,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/yarrahotelabbotsford/"
   },
   {
     "name": "Yellow Bird",
@@ -2192,9 +2207,9 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "address": "649 Bridge Rd, Richmond VIC 3121",
     "category": "Pub/Bar",
     "description": "Dogs welcome on the terrace overlooking the park.",
-    "lat": -37.82036,
-    "lng": 145.0132,
-    "geocodeSource": "facebook+official"
+    "lat": -37.82005,
+    "lng": 145.01316,
+    "geocodeSource": "facebook+official+manual-adjustment"
   },
   {
     "name": "Touchwood",
@@ -2231,5 +2246,15 @@ window.DOG_FRIENDLY_LOCATIONS = [
     "lat": -37.81979,
     "lng": 145.00798,
     "geocodeSource": "facebook+official"
+  },
+  {
+    "name": "Mikey's Bar",
+    "address": "268 Johnston St, Abbotsford VIC 3067",
+    "category": "Pub/Bar",
+    "description": "Dog-friendly bar on Johnston Street.",
+    "lat": -37.79988,
+    "lng": 144.99422,
+    "geocodeSource": "user+nearby",
+    "instagramUrl": "https://www.instagram.com/mikeys.bar"
   }
 ];
