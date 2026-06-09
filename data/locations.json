@@ -43,7 +43,8 @@
     "description": "Dogs welcome in outdoor undercover seating.",
     "lat": -37.7747727,
     "lng": 144.9980519,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/all_are_welcome"
   },
   {
     "name": "Arbory Bar & Eatery",
@@ -180,7 +181,8 @@
     "description": "Leashed dogs welcome inside and at street seating.",
     "lat": -37.8000692,
     "lng": 144.984241,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/Beermash/"
   },
   {
     "name": "Bendigo Street Milk Bar",
@@ -198,7 +200,8 @@
     "description": "Dogs welcome in courtyard and street seating with undercover areas.",
     "lat": -37.799889,
     "lng": 144.978373,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/blackcatfitzroy"
   },
   {
     "name": "Bodriggy Brewing",
@@ -207,7 +210,8 @@
     "description": "Dogs welcome in inside foyer area and at outdoor tables with water bowls.",
     "lat": -37.8001115,
     "lng": 144.9945274,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/bodriggybrewingco/"
   },
   {
     "name": "Bonny",
@@ -216,7 +220,8 @@
     "description": "Dog-friendly all-weather beer garden.",
     "lat": -37.8021833,
     "lng": 144.9776109,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/bonnyfitzroy"
   },
   {
     "name": "Bouzy Rouge",
@@ -225,7 +230,8 @@
     "description": "Dog-friendly fully covered courtyard.",
     "lat": -37.8196974,
     "lng": 145.0071315,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/bouzyrouge_"
   },
   {
     "name": "Bridie O'Reilly's",
@@ -270,7 +276,8 @@
     "description": "Dog-friendly cafe with rear courtyard.",
     "lat": -37.7840077,
     "lng": 144.9833889,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/cafe_piccante"
   },
   {
     "name": "Caroline Gardens",
@@ -330,7 +337,8 @@
     "description": "Dogs welcome in undercover beer garden with water bowls.",
     "lat": -37.8494531,
     "lng": 144.9928302,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/collegelawn"
   },
   {
     "name": "Como Park and Thomas Oval Dog Park",
@@ -437,7 +445,8 @@
     "description": "Dogs welcome in courtyard and street seating.",
     "lat": -37.799833,
     "lng": 144.9941396,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/drmorsebar/"
   },
   {
     "name": "Edinburgh Gardens",
@@ -464,7 +473,8 @@
     "description": "Dog-friendly cafe with outdoor seating.",
     "lat": -37.7993754,
     "lng": 144.9827654,
-    "geocodeSource": "facebook+nominatim"
+    "geocodeSource": "facebook+nominatim",
+    "instagramUrl": "https://www.instagram.com/faradays.cage"
   },
   {
     "name": "Fawkner Park",
@@ -560,7 +570,8 @@
     "description": "Dog-friendly pub with undercover beer garden.",
     "lat": -37.7965061,
     "lng": 144.9898526,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/goldystavern"
   },
   {
     "name": "Greensleeves Coffee House",
@@ -587,7 +598,8 @@
     "description": "Dogs welcome on rooftop courtyard and street seating.",
     "lat": -37.826795,
     "lng": 144.9979343,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/harlowbar/"
   },
   {
     "name": "Holla Coffee Roasters",
@@ -651,7 +663,8 @@
     "description": "Leashed dogs welcome at street seating.",
     "lat": -37.8264195,
     "lng": 145.00722,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/jethrocanteen"
   },
   {
     "name": "Kanteen",
@@ -669,7 +682,8 @@
     "description": "Dog-friendly courtyard with water bowls.",
     "lat": -37.8031528,
     "lng": 144.9833865,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/kentst"
   },
   {
     "name": "King William Reserve",
@@ -724,7 +738,8 @@
     "description": "Dogs welcome in heated undercover courtyard.",
     "lat": -37.8436508,
     "lng": 144.9956175,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/leonardshouseoflove"
   },
   {
     "name": "Little Hop",
@@ -762,7 +777,8 @@
     "description": "Dogs welcome inside and in the courtyard.",
     "lat": -37.8000264,
     "lng": 144.9936498,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/lulietavern"
   },
   {
     "name": "Marquis of Lorne",
@@ -771,7 +787,8 @@
     "description": "Leashed dogs welcome inside and at street seating.",
     "lat": -37.7972297,
     "lng": 144.9819606,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/marquis.of.lorne"
   },
   {
     "name": "Mavis the Grocer",
@@ -798,7 +815,8 @@
     "description": "Dogs welcome at outdoor seating with treats available.",
     "lat": -37.7857098,
     "lng": 144.9893085,
-    "geocodeSource": "manual"
+    "geocodeSource": "manual",
+    "instagramUrl": "https://www.instagram.com/mittecafe/?hl=en"
   },
   {
     "name": "Monty's Bar",
@@ -834,7 +852,8 @@
     "description": "Listed dog-friendly with outdoor seating.",
     "lat": -37.7993224,
     "lng": 144.9895284,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/nighthawksbar"
   },
   {
     "name": "Norman South Yarra",
@@ -897,7 +916,8 @@
     "description": "Dog-friendly bar where dogs are welcomed inside.",
     "lat": -37.7972971,
     "lng": 144.9788733,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/pendant.publicbar"
   },
   {
     "name": "Pilgrim Bar",
@@ -924,7 +944,8 @@
     "description": "Dogs welcome in courtyard areas.",
     "lat": -37.8513691,
     "lng": 144.9885113,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/prahranhotel"
   },
   {
     "name": "Prince Alfred Hotel",
@@ -994,7 +1015,8 @@
     "description": "Dogs welcome in indoor and outdoor areas with water bowls.",
     "lat": -37.7988193,
     "lng": 144.9816836,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/therochey"
   },
   {
     "name": "Royal Saxon",
@@ -1143,7 +1165,8 @@
     "description": "User-recommended dog-friendly rooftop and outdoor venue.",
     "lat": -37.8315664,
     "lng": 144.9560233,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thealbionrooftop"
   },
   {
     "name": "The B.East",
@@ -1152,7 +1175,8 @@
     "description": "Leashed dogs welcome at street seating.",
     "lat": -37.7762895,
     "lng": 144.9711737,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/beastmelbourne/"
   },
   {
     "name": "The Empress Hotel",
@@ -1161,7 +1185,8 @@
     "description": "Dog-friendly beer garden with water bowls and covered patio.",
     "lat": -37.7827837,
     "lng": 144.9779257,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/empressfitzroy/"
   },
   {
     "name": "The Esplanade Hotel",
@@ -1197,7 +1222,8 @@
     "description": "Dogs welcome in courtyard and rooftop areas with water bowls.",
     "lat": -37.7945169,
     "lng": 144.9878886,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thefoxhotel/?hl=en"
   },
   {
     "name": "The Grace Darling Hotel",
@@ -1206,7 +1232,8 @@
     "description": "Listed dog-friendly with outdoor areas.",
     "lat": -37.804851,
     "lng": 144.983442,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thegracedarling/?hl=en"
   },
   {
     "name": "The Kettle Black",
@@ -1243,7 +1270,8 @@
     "description": "Dog-friendly pub near Edinburgh Gardens.",
     "lat": -37.7908244,
     "lng": 144.9795311,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thelordnewryhotel/"
   },
   {
     "name": "The Mill Brewery",
@@ -1252,7 +1280,8 @@
     "description": "Dogs welcome inside and in covered areas with water bowls.",
     "lat": -37.7982615,
     "lng": 144.9860039,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/themillbrew"
   },
   {
     "name": "The National Hotel",
@@ -1261,7 +1290,8 @@
     "description": "Dogs welcome in partially covered beer garden with water bowls.",
     "lat": -37.8109133,
     "lng": 145.0028288,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/thenationalrichmond"
   },
   {
     "name": "The Old Milk Bar",
@@ -1299,7 +1329,8 @@
     "description": "User-recommended dog-friendly pub with outdoor seating.",
     "lat": -37.7960561,
     "lng": 144.9790327,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/puntersclubfitzroy"
   },
   {
     "name": "The Rainbow Hotel",
@@ -1308,7 +1339,8 @@
     "description": "Dogs welcome in the covered courtyard with water bowls.",
     "lat": -37.8005789,
     "lng": 144.9793433,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/therainbowhotel"
   },
   {
     "name": "The Retreat Hotel",
@@ -1336,7 +1368,8 @@
     "description": "Dogs welcome in indoor and beer garden areas until 10pm.",
     "lat": -37.7982507,
     "lng": 144.9760194,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/the.shady.lady.bar"
   },
   {
     "name": "The Standard Hotel",
@@ -1345,7 +1378,8 @@
     "description": "Dog-friendly beer garden.",
     "lat": -37.8007515,
     "lng": 144.9768301,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/standardhotelfitzroy"
   },
   {
     "name": "The Swan Hotel",
@@ -1354,7 +1388,8 @@
     "description": "Dog-friendly pub with beer garden and water bowls.",
     "lat": -37.8341639,
     "lng": 144.9966058,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/swanhotelrichmond"
   },
   {
     "name": "The Terminus Hotel",
@@ -1363,7 +1398,8 @@
     "description": "Super dog-friendly pub with beer garden and dog menu.",
     "lat": -37.8109749,
     "lng": 145.0072652,
-    "geocodeSource": "facebook+nominatim"
+    "geocodeSource": "facebook+nominatim",
+    "instagramUrl": "https://www.instagram.com/theterminushotel"
   },
   {
     "name": "The Tipsy Cow Malt and Wine",
@@ -1381,7 +1417,8 @@
     "description": "Dogs welcome in the small courtyard.",
     "lat": -37.7885137,
     "lng": 144.9789774,
-    "geocodeSource": "facebook+nominatim"
+    "geocodeSource": "facebook+nominatim",
+    "instagramUrl": "https://www.instagram.com/tramwayhotel"
   },
   {
     "name": "Uitgang Bar",
@@ -1399,7 +1436,8 @@
     "description": "Dogs welcome in courtyard rooftop and street areas.",
     "lat": -37.8038783,
     "lng": 144.9824011,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/unionclubfitzroy"
   },
   {
     "name": "Victoria Gardens",
@@ -1432,7 +1470,8 @@
     "description": "Dogs welcome inside and in covered beer garden areas.",
     "lat": -37.7684063,
     "lng": 144.9628364,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/welcometobrunswick"
   },
   {
     "name": "Welcome to Thornbury",
@@ -1441,7 +1480,8 @@
     "description": "Large dog-friendly open-air seating area with water bowls.",
     "lat": -37.7646905,
     "lng": 144.9999947,
-    "geocodeSource": "nominatim"
+    "geocodeSource": "nominatim",
+    "instagramUrl": "https://www.instagram.com/welcometothornbury/"
   },
   {
     "name": "Wesley Anne",
