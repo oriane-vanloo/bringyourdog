@@ -1422,7 +1422,7 @@ h1 {
   gap: 8px;
 }
 
-.place-instagram-link {
+a.place-instagram-link {
   display: inline-flex;
   width: fit-content;
   min-height: 36px;
@@ -1448,20 +1448,20 @@ h1 {
     background 280ms ease;
 }
 
-.place-instagram-link:hover {
+a.place-instagram-link:hover {
   color: #8C566F;
   border-color: #8C566F;
   background: rgba(255, 255, 255, 0.76);
   transform: translateY(-1px);
 }
 
-.place-instagram-link:active {
+a.place-instagram-link:active {
   color: var(--button);
   border-color: var(--button);
   transform: translateY(0);
 }
 
-.get-there {
+a.get-there {
   display: inline-flex;
   width: fit-content;
   min-height: 36px;
@@ -1469,7 +1469,7 @@ h1 {
   justify-content: center;
   border-radius: 999px;
   padding: 7px 16px;
-  color: var(--accent-fg);
+  color: var(--foreground);
   background: var(--button);
   box-shadow: 0 14px 24px rgba(30, 41, 59, 0.08);
   font-size: 12px;
