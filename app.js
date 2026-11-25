@@ -130,6 +130,7 @@ const expandedFilterToggle = document.querySelector("#expandedFilterToggle");
 const expandedFilterBadge = document.querySelector("#expandedFilterBadge");
 const expandedFilterSheet = document.querySelector("#expandedFilterSheet");
 const appConfig = {
+  cartoBasemapsApiKey: "",
   googleAnalyticsMeasurementId: "",
   googleMapsApiKey: "",
   useGooglePlacePhotos: true,
@@ -2913,7 +2914,8 @@ async function init() {
   mapElement.setAttribute("aria-label", "Interactive map of dog-friendly places in Melbourne");
   map.attributionControl.setPrefix(false);
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
+  const tileUrl = "https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png?key=" + encodeURIComponent(appConfig.cartoBasemapsApiKey);
+  L.tileLayer(tileUrl, {
     fadeAnimation: false,
     maxZoom: 19,
     keepBuffer: 4,
